@@ -179,7 +179,7 @@ export const CartProvider = ({ children }) => {
         } else {
           updatedCart = [
             ...prevCart,
-            { ...product, product_qty: 1, id: Math.random() * 100 },
+            { ...product, id: Math.random() * 100 },
           ];
           console.log("updetedcart", updatedCart);
           setTotalItems(updatedCart.length);
