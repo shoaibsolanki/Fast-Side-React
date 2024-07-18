@@ -1,0 +1,114 @@
+import React from "react";
+import google from ".././imgs/Vector.png";
+import facebook from ".././imgs/facebook.png";
+import whatsapp from ".././imgs/whatsapp.png";
+import sendIcon from ".././imgs/send-2.png";
+import headphones from ".././imgs/headphone.png";
+import { Link } from "react-router-dom";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import { WhatsApp } from "@mui/icons-material";
+const Footer = () => {
+  return (
+    <>
+      <footer className="bg-light text-primary p-10 ">
+        <section
+          id="subscribe"
+          className="bg-white p-8 my-4 rounded-xl flex flex-col md:flex-row justify-evenly items-center space-y-4 md:space-y-0 md:space-x-4 max-w-[1600px] mx-auto"
+        >
+          <h2 className="text-3xl font-semibold capitalize text-center md:text-left">
+            Subscribe FastSide
+          </h2>
+          <div className="bg-second flex p-4 rounded-xl w-full md:w-auto">
+            <input
+              className="bg-second text-white outline-none placeholder:text-white flex-1"
+              placeholder="Enter Your Email"
+            />
+            <button className="ml-4">
+              <img src={sendIcon} alt="send-your-email" />
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <img src={headphones} alt="Call-us-now" />
+            <div>
+              <a href="tel:+917755821175" className="block">
+                <h3 className="text-md font-semibold">Call us 24/7</h3>
+                <h3 className="text-md font-semibold">(+91) 775-582-1175</h3>
+              </a>{" "}
+            </div>
+          </div>
+        </section>
+
+        <div className="footer ">
+          <aside>
+            <h2 className="text-4xl font-bold">FastSide</h2>
+            <p className=" border-b-[1px] border-primary  pb-4">
+              Bhopal - kalyanitower 604 khajuri road bhopal
+              <br /> pincode 462022
+            </p>
+            <div className="flex gap-8 my-4 text-dark ">
+              {/* <img src={google} alt="google_link" /> */}
+              <a
+                href="https://www.instagram.com/fastside.in/"
+                target="_blank"
+                rel=" noreferrer"
+              >
+                <InstagramIcon className="text-pink-600" />
+              </a>{" "}
+              <a
+                href="https://wa.me/+917755821175"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsApp className="text-green-500" />{" "}
+              </a>{" "}
+            </div>
+          </aside>
+
+          <nav>
+            <h1 className="footer-title ">About & Policy</h1>
+            <Link to="/about" className="link link-hover">
+              About
+            </Link>{" "}
+            <Link to="/returnpolicy" className="link link-hover">
+              Return policy
+            </Link>
+            <Link to="/policy" className="link link-hover">
+              Privacy policy
+            </Link>
+            <Link to="/shippingpolicy" className="link link-hover">
+              Shipping policy
+            </Link>
+            <Link to="/terms-of-service" className="link link-hover">
+              Terms of service
+            </Link>
+          </nav>
+          <nav>
+            <h1 className="footer-title ">get help</h1>
+            <Link to="/customercare" className="link link-hover">
+              Customer care
+            </Link>
+            {/* <a className="link link-hover">News</a> */}
+            {/* <a className="link link-hover">Faq’s</a> */}
+          </nav>
+        </div>
+      </footer>
+      {/* lower-footer */}
+      <div
+        id="lower-footer"
+        className=" flex items-center justify-center p-4 bg-primary text-white"
+      >
+        THIS WEBSITE IS MANAGED BY{" "}
+        <a
+          target="_blank"
+          href="https://photonsoftwares.com"
+          className="underline text-center ml-1"
+        >
+          {" "}
+          PHOTON SOFTWARES
+        </a>{" "}
+      </div>
+    </>
+  );
+};
+
+export default Footer;
