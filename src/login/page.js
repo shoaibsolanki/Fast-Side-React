@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import DataService from '../services/requestApi';
-import { useAuth } from '../contexts/AuthConext';
-import Cookies from 'js-cookie';
-import { Alert } from '@mui/material';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import DataService from "../services/requestApi";
+import { useAuth } from "../contexts/AuthConext";
+import Cookies from "js-cookie";
+import { Alert } from "@mui/material";
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -12,7 +12,11 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { login, isAuthenticated } = useAuth();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -23,7 +27,7 @@ const Login = () => {
         const user = response.data.data.customer_data;
 
         if (token && user) {
-          login( user, token);
+          login(user, token);
           if (redirectUrl) {
             sessionStorage.removeItem("redirectAfterLogin");
             navigate(redirectUrl);
@@ -51,7 +55,7 @@ const Login = () => {
 
   return (
     <div
-      className="relative h-screen bg-red-500 flex items-center justify-center bg-cover bg-center w-full"
+      className="relative h-screen  flex items-center justify-center bg-cover bg-center w-full"
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",

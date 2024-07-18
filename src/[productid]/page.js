@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Rating from "../components/Rating";
 import { Check } from "@mui/icons-material";
@@ -99,7 +98,7 @@ const ProductDetails = () => {
             {mainImage && (
               <div className="">
                 <img
-                  alt="product image"
+                  alt="product"
                   src={mainImage}
                   width={500}
                   height={500}
@@ -109,6 +108,24 @@ const ProductDetails = () => {
                 />
 
                 <div className="flex gap-4 mt-4 mx-auto flex-wrap">
+                  {singleProduct?.colorList[index]?.image_url && (
+                    <img
+                      alt="main  thumbnail"
+                      width={100}
+                      height={100}
+                      src={singleProduct?.colorList[index]?.image_url}
+                      className={`cursor-pointer ${
+                        mainImage === singleProduct?.colorList[index]?.image_url
+                          ? "border-2 border-blue-500"
+                          : ""
+                      } mx-auto`}
+                      onClick={() =>
+                        handleSubImageClick(
+                          singleProduct?.colorList[index]?.image_url
+                        )
+                      }
+                    />
+                  )}
                   {singleProduct?.colorList[index]?.subimage_url && (
                     <img
                       alt="subimage"
@@ -124,24 +141,6 @@ const ProductDetails = () => {
                       onClick={() =>
                         handleSubImageClick(
                           singleProduct?.colorList[index]?.subimage_url
-                        )
-                      }
-                    />
-                  )}
-                  {singleProduct?.colorList[index]?.image_url && (
-                    <img
-                      alt="main image thumbnail"
-                      width={100}
-                      height={100}
-                      src={singleProduct?.colorList[index]?.image_url}
-                      className={`cursor-pointer ${
-                        mainImage === singleProduct?.colorList[index]?.image_url
-                          ? "border-2 border-blue-500"
-                          : ""
-                      } mx-auto`}
-                      onClick={() =>
-                        handleSubImageClick(
-                          singleProduct?.colorList[index]?.image_url
                         )
                       }
                     />

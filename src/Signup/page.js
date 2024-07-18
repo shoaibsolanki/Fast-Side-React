@@ -1,13 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import DataService from "../services/requestApi";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthConext";
-import { useNavigate } from 'react-router-dom';
-// import Toast from "../components/Toast";
-// import Success from "../../public/svgs/Success.svg";
-import { Image } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
+
 const Signup = () => {
+  // Get the current date
+  const today = new Date();
+
+  // Extract the date part (without the time)
+  const currentDate = today.toLocaleDateString();
+
   const {
     register,
     handleSubmit,
@@ -16,18 +20,23 @@ const Signup = () => {
     defaultValues: {
       address_3: "Building 5",
       discount_percent: 10.0,
-      saas_id: "1",
-      store_id: "10001",
+      saas_id: "33",
+      store_id: "33001",
       sub_centre_id: 1,
-      card_number: Math.ceil(Math.random() * 10),
-      city: "",
-      state: "",
+      card_number: Math.ceil(Math.random() * 10000),
+      city: "city",
+      state: "state",
       country: "India",
       preferred_language: "English",
-      customer_since: "2020-01-01",
+      customer_since: currentDate,
       payment_terms: 30,
       credit_limit: 10000.0,
       sales_representative: "Jane Smith",
+      gender: "male",
+      occupation: "occ",
+      income_level: 50000,
+      source_of_acq: "online",
+      customer_type: "CUSTOMER",
     },
   });
   const { isAuthenticated } = useAuth();
@@ -45,6 +54,7 @@ const Signup = () => {
 
   const SignUp = async (data) => {
     try {
+      console.log(data);
       const response = await DataService.Signup(data);
       console.log(response.data);
       if (response?.data?.status) {
@@ -137,7 +147,7 @@ const Signup = () => {
                 type="text"
                 placeholder="Address 2"
               />
-              <select
+              {/* <select
                 {...register("gender")}
                 className="border-2 bg-white rounded h-9 w-full focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
               >
@@ -145,63 +155,33 @@ const Signup = () => {
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
-              </select>
-              <input
+              </select> */}
+              {/* <input
                 {...register("occupation")}
                 className="border-2 bg-white rounded h-9 w-full focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
                 type="text"
                 placeholder="Occupation"
-              />
-              <input
+              /> */}
+              {/* <input
                 {...register("income_level")}
                 className="border-2 bg-white rounded h-9 w-full focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
                 type="text"
                 placeholder="Income Level"
-              />
-              <input
+              /> */}
+              {/* <input
                 {...register("source_of_acq")}
                 className="border-2 bg-white rounded h-9 w-full focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
                 type="text"
                 placeholder="Source of Acquisition"
-              />
-              <input
+              /> */}
+              {/* <input
                 {...register("customer_type")}
                 className="border-2 bg-white rounded h-9 w-full focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
                 type="text"
                 placeholder="Customer Type"
-              />
+              /> */}
             </div>
-            {/* <div className="flex justify-around w-full text-gray-400 gap-5 mt-4 px-2 sm:px-6">
-              <div className="checkbox-wrapper flex items-center">
-                <input id="terms-checkbox-37" name="checkbox" type="checkbox" />
-                <label className="terms-label ml-2" htmlFor="terms-checkbox-37">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 200 200"
-                    className="checkbox-svg"
-                  >
-                    <mask fill="white" id="path-1-inside-1_476_5-37">
-                      <rect height="200" width="200"></rect>
-                    </mask>
-                    <rect
-                      mask="url(#path-1-inside-1_476_5-37)"
-                      strokeWidth="40"
-                      className="checkbox-box"
-                      height="200"
-                      width="200"
-                    ></rect>
-                    <path
-                      strokeWidth="15"
-                      d="M52 111.018L76.9867 136L149 64"
-                      className="checkbox-tick"
-                    ></path>
-                  </svg>
-                  <span className="label-text">Remember Me</span>
-                </label>
-              </div>
-              <span>Forget Password</span>
-            </div> */}
+
             <input
               disabled={isSubmitting}
               className="border rounded-3xl h-9 w-full md:w-80 bg-primary italic font-semibold  cursor-pointer text-white focus-visible:outline-none  transition-transform duration-500 mt-4"
@@ -210,19 +190,13 @@ const Signup = () => {
             />
             <p className="mt-4 text-center">
               Already Have Account?{" "}
-              <Link className="hover:text-second font-medium" href="/login">
+              <Link className="hover:text-second font-medium" to="/login">
                 Login
               </Link>
             </p>
           </form>
         </div>
       )}
-      {/* <Toast
-    message={toastMessage}
-    setOpenToast={setOpenToast}
-    openToast={openToast}
-    title={toastTitle}
-  /> */}
     </div>
   );
 };
