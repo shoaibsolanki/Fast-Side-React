@@ -1,7 +1,10 @@
 import { Email, Factory, Phone } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect } from "react";
 
 const CustomerCare = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="p-4">
       <h2 className="text-center text-2xl text-black mb-4">Contact Us</h2>
