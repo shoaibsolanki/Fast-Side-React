@@ -1,7 +1,4 @@
 import React from "react";
-import google from ".././imgs/Vector.png";
-import facebook from ".././imgs/facebook.png";
-import whatsapp from ".././imgs/whatsapp.png";
 import sendIcon from ".././imgs/send-2.png";
 import headphones from ".././imgs/headphone.png";
 import { Link } from "react-router-dom";
@@ -41,9 +38,13 @@ const Footer = () => {
         <div className="footer ">
           <aside>
             <h2 className="text-4xl font-bold">FastSide</h2>
-            <p className=" border-b-[1px] border-primary  pb-4">
-              Bhopal - kalyanitower 604 khajuri road bhopal
-              <br /> pincode 462022
+            <p className=" border-b-[1px] border-primary  pb-4 tracking-wide">
+              Bhopal - kalyanitower 604 khajuri road bhopal ,462022
+              <br />
+              <span className="font-semibold"> Bhopal Facility: </span> Photon
+              IT Ops Office: Plot No. 242/G3,
+              <br />
+              Nitikhand-I, Indirapuram, Ghaziabad NCR India
             </p>
             <div className="flex gap-8 my-4 text-dark ">
               {/* <img src={google} alt="google_link" /> */}
@@ -102,6 +103,7 @@ const Footer = () => {
           target="_blank"
           href="https://photonsoftwares.com"
           className="underline text-center ml-1"
+          rel="noreferrer"
         >
           {" "}
           PHOTON SOFTWARES

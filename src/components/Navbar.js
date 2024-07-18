@@ -1,16 +1,14 @@
-import {
-  LocalShippingOutlined,
-  Person2Outlined,
-  PlaceOutlined,
-  ShoppingCartRounded,
-  WhatsApp,
-} from "@mui/icons-material";
+import { WhatsApp } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthConext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import logoImg from ".././imgs/logo.png";
+import shoppingCartImage from "../imgs/shopping-cart.png";
+import user from "../imgs/user.png";
+import truck from "../imgs/truck.png";
+import location from "../imgs/location.png";
 
 const Navbar = ({ search, setSearch, data }) => {
   const { cart, totalItems } = useCart();
@@ -43,6 +41,7 @@ const Navbar = ({ search, setSearch, data }) => {
             target="_blank"
             href="https://wa.me/+917755821175"
             className=" hover:underline flex items-center gap-2"
+            rel="noreferrer"
           >
             <WhatsApp className=" text-green-500" /> (+91) 775-582-1175
           </a>
@@ -50,12 +49,10 @@ const Navbar = ({ search, setSearch, data }) => {
 
         <div className=" max-md:hidden flex flex-col md:flex-row justify-between gap-5 items-center text-sm md:text-lg">
           <h2 className="flex gap-2 items-center">
-            <PlaceOutlined fontSize="large" />
-            Our Store
+            <img src={location} alt="Location" /> Our Store
           </h2>
           <h2 className="flex gap-2 items-center">
-            <LocalShippingOutlined fontSize="large" />
-            Track Your Order
+            <img src={truck} alt="track_your_order" /> Track Your Order
           </h2>
         </div>
       </div>
@@ -85,19 +82,28 @@ const Navbar = ({ search, setSearch, data }) => {
               onClick={handleProceedToProfile}
             >
               <div className="flex gap-2 items-center text-white">
-                <Person2Outlined fontSize="large" />
+                <img
+                  src={user}
+                  alt="profile_button"
+                  className="hover:scale-105  duration-300"
+                />{" "}
                 <p className="hidden xl:block text-sm md:text-xl">
                   {userId ? "Profile" : "Login"}
                 </p>
               </div>
             </button>
             <Link to="/cart">
-              <div className="flex gap-2 items-center text-white">
-                <ShoppingCartRounded fontSize="large" />
-                <h3 className="flex items-center justify-center bg-second rounded-full h-6 w-6 text-center text-xs md:text-sm">
+              <div className="flex gap-1 items-center text-white ">
+                <img
+                  className="hover:scale-105  duration-300"
+                  src={shoppingCartImage}
+                  alt="shopping-cart"
+                />
+
+                <h3 className="flex items-center justify-center  rounded-full text-center text-xs md:text-sm">
                   {totalItems}
                 </h3>
-                <p className="hidden xl:block text-sm md:text-lg">Cart</p>
+                <p className="hidden xl:block text-sm md:text-lg ml-2">Cart</p>
               </div>
             </Link>
           </div>

@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const AboutUs = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <main className="container mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 text-black">
       <h1 className="text-3xl font-bold text-center mb-6">About Us</h1>

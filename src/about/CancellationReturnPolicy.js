@@ -1,6 +1,10 @@
 import Head from "next/head";
+import { useEffect } from "react";
 
 const CancellationReturnPolicy = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <Head>
@@ -77,7 +81,11 @@ const CancellationReturnPolicy = () => {
             TERMS OF RETURN AND REFUND
           </h2>
           <p className="mb-4">
-            4.1 You may initiate the return of Products within 7 days. We would accept the request for the return of such Product subject to the terms of this Policy. Fastside will not process returns if you have placed the order for a wrong Product model, color, or incorrect Product.
+            4.1 You may initiate the return of Products within 7 days. We would
+            accept the request for the return of such Product subject to the
+            terms of this Policy. Fastside will not process returns if you have
+            placed the order for a wrong Product model, color, or
+            incorrect Product.
           </p>
           <p className="mb-4">
             4.1. You may initiate the return of Products within the timelines

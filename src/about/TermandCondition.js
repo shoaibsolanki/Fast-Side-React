@@ -1,7 +1,10 @@
-import { Link } from 'react-router-dom';
-import React from "react";
+import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
 
 const TermandCondition = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="my-4 p-2 max-w-[1000px] mx-auto">
       <section className="my-4">

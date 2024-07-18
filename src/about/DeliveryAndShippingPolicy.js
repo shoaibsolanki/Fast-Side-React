@@ -1,6 +1,10 @@
 import { Typography } from "@mui/material";
+import { useEffect } from "react";
 
 const DeliveryAndShippingPolicy = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <Typography>

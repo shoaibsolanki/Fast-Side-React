@@ -4,7 +4,7 @@ import { useCart } from "../../contexts/CartContext";
 
 const AddToCartButton = ({ item }) => {
   const { addToCart, cart } = useCart();
-  const AddedItem = cart.find((el) => el.item_id === item.item_id);
+  const AddedItem = cart?.find((el) => el.item_id === item.item_id);
 
   return (
     <div className="my-4 flex items-center gap-8">
