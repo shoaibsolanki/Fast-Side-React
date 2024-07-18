@@ -327,8 +327,9 @@ const Policy = () => {
           </p>
         </section>
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">
-            CHANGES/AMENDMENT/MODIFICATION TO THE PRIVACY POLICY:{" "}
+          <h2 className="text-2xl font-semibold mb-4 text-wrap ">
+            CHANGES/AMENDMENT/<br/>
+            MODIFICATION TO THE PRIVACY POLICY:{" "}
           </h2>
           <p className="mb-4">
             5.1. We will treat your Information in accordance with applicable
