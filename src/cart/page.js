@@ -1,4 +1,3 @@
-
 import React, { Suspense, useEffect, useState } from "react";
 import {
   Box,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import { Add, Remove, Delete, CurrencyRupee } from "@mui/icons-material";
 import { useCart } from "../contexts/CartContext";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { BASEURL } from "../services/http-Pos";
 import emptyCart from ".././imgs/shopping.png";
 import AddIcon from "@mui/icons-material/Add";
@@ -40,7 +39,7 @@ const CartItem = ({
                 ? item?.image_url
                   ? item?.image_url
                   : "/default-image.jpg"
-                : item?.colorList?.length >0 &&item?.colorList[0].image_url
+                : item?.colorList?.length > 0 && item?.colorList[0].image_url
             }
             alt={item?.itemName}
             width={50}
@@ -163,7 +162,7 @@ const Cart = () => {
     handleDecrease,
   } = useCart();
   const { authData, isAuthenticated } = useAuth();
-  const{ id, saasId, storeId }=authData
+  const { id, saasId, storeId } = authData;
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -186,11 +185,11 @@ const Cart = () => {
   }, [cart]);
 
   const handleProceedToCheckout = () => {
-    if (userId) {
-      navigate("/checkout");
-    } else {
-      navigate("/login");
-    }
+    navigate("/checkout");
+    // if (userId) {
+    // } else {
+    //   navigate("/login");
+    // }
   };
 
   if (loading) {
@@ -341,22 +340,14 @@ const Cart = () => {
   if (cart.length === 0) {
     return (
       <div className="flex items-center justify-center p-8 flex-col text-center">
-        <img
-          height={200}
-          width={200}
-          alt="empty_cart"
-          src={emptyCart}
-        />
+        <img height={200} width={200} alt="empty_cart" src={emptyCart} />
         <h2 className="text-4xl font-semibold text-primary">
           Your cart is empty
         </h2>
         <p className="text-2xl text-black text-medium">
           Looks like you have not added anything to your cart
         </p>
-        <Link
-          to="/"
-          className="btn font-bold bg-primary my-4 px-16 text-white"
-        >
+        <Link to="/" className="btn font-bold bg-primary my-4 px-16 text-white">
           Shop Now
         </Link>
       </div>
