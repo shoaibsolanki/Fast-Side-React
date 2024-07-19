@@ -474,7 +474,7 @@ const CheckoutPage = () => {
               >
                 Save address
               </button>
-              {savedAddresses.length !== 0 && (
+              {savedAddresses?.length !== 0 && (
                 <button
                   onClick={() => setShowNewAddressForm(false)}
                   className="w-full py-3 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors"

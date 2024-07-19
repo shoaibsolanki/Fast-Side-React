@@ -174,12 +174,12 @@ const Cart = () => {
   }, [authData]);
 
   useEffect(() => {
-    if (cart.length > 0) {
+    if (cart?.length > 0) {
       setLoading(false);
     }
   }, [cart]);
   useEffect(() => {
-    if (cart.length === 0) {
+    if (cart?.length === 0) {
       setLoading(false);
     }
   }, [cart]);
@@ -337,7 +337,7 @@ const Cart = () => {
     );
   }
 
-  if (cart.length === 0) {
+  if (cart?.length === 0) {
     return (
       <div className="flex items-center justify-center p-8 flex-col text-center">
         <img height={200} width={200} alt="empty_cart" src={emptyCart} />
@@ -394,7 +394,7 @@ const Cart = () => {
                 </Grid>
               </Box>
             </div>
-            {cart.map((item, index) => {
+            {cart?.map((item, index) => {
               return (
                 <CartItem
                   key={index}

@@ -17,7 +17,7 @@ const SimpleProductComponent = ({ title, data }) => {
               {item.item_name}
             </h1>
             <p className=" text-lg text-primary font-medium">
-              {item.colorList.length}
+              {item.colorList?.length}
             </p>
           </div>
         </div>

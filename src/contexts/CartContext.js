@@ -64,13 +64,13 @@ export const CartProvider = ({ children }) => {
         return total + product.price * product.product_qty;
       }, 0);
       setTotalPrice(subTotal);
-      setTotalItems(fetchedCart.length);
+      setTotalItems(fetchedCart?.length);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
   const setTotalItem = () => {
-    setTotalItems(cart.length);
+    setTotalItems(cart?.length);
   };
 
   const migrateLocalStorageCartToServerCart = async (userId) => {
@@ -175,14 +175,14 @@ export const CartProvider = ({ children }) => {
             }
             return item;
           });
-          setTotalItems(updatedCart.length);
+          setTotalItems(updatedCart?.length);
         } else {
           updatedCart = [
             ...prevCart,
             { ...product, id: Math.random() * 100 },
           ];
           console.log("updetedcart", updatedCart);
-          setTotalItems(updatedCart.length);
+          setTotalItems(updatedCart?.length);
         }
 
         const newTotalPrice = updatedCart.reduce((total, item) => {
@@ -217,7 +217,7 @@ export const CartProvider = ({ children }) => {
         }, 0);
 
         setTotalPrice(totalNewPrice);
-        setTotalItems(updatedCart.length);
+        setTotalItems(updatedCart?.length);
         return updatedCart;
       });
     }
