@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { Remove } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+
 const ItemsShowInSide = ({ items }) => {
-  const { totalPrice, handleIncrease, handleDecrease } = useCart();
+  const { totalPrice, handleIncrease, handleDecrease, cart } = useCart();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [total, setTotal] = useState(totalPrice);
@@ -14,7 +15,7 @@ const ItemsShowInSide = ({ items }) => {
     setDiscount(0);
   };
   console.log(items);
-
+  console.log("without login cart", cart);
   return (
     <div className="my-4 w-full md:w-[500px] h-full mx-auto border border-gray-300 p-6 rounded-md text-dark">
       <h2 className="text-lg font-semibold mb-4">Order summary</h2>
@@ -23,14 +24,16 @@ const ItemsShowInSide = ({ items }) => {
           return (
             <div className="flex items-center space-x-4" key={index}>
               <img
-                src={item.image_url}
+                src={item.image_url ? item.image_url : item.image_name1}
                 alt="Badge Reel"
                 width={50}
                 height={50}
               />
               <div className="flex-1">
                 <h3 className="font-semibold">
-                  {item.itemName?.slice(0, 30)}
+                  {item.itemName
+                    ? item.itemName?.slice(0, 30)
+                    : item.item_name?.slice(0, 30)}
                   {item.itemName?.length > 30 ? "..." : ""}
                 </h3>
                 <p>Color: {item.image_name}</p>
