@@ -1,4 +1,4 @@
-import { WhatsApp } from "@mui/icons-material";
+import { Call, WhatsApp } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
@@ -36,14 +36,14 @@ const Navbar = ({ search, setSearch, data }) => {
       {/* upper navbar */}
       <div className=" bg-lightgray text-dark p-4 flex flex-col md:flex-row justify-between items-center">
         <h2 className="text-sm md:text-lg flex items-center gap-2">
-          Chat with us:{" "}
+          Call with us:{" "}
           <a
             target="_blank"
-            href="https://wa.me/+917755821175"
+            href="tel:+917755821175"
             className=" hover:underline flex items-center gap-2"
             rel="noreferrer"
           >
-            <WhatsApp className=" text-green-500" /> (+91) 775-582-1175
+            <Call className=" text-green-500" /> (+91) 775-582-1175
           </a>
         </h2>
 

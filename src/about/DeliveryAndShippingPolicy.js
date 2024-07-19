@@ -10,7 +10,7 @@ const DeliveryAndShippingPolicy = () => {
       <Typography>
         <title>Delivery and Shipping Policy</title>
       </Typography>
-      <main className="container mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 text-black">
+      <main className="container mx-auto bg-white  text-primary my-10">
         <h1 className="text-3xl font-bold mb-6 text-center">
           DELIVERY AND SHIPPING POLICY
         </h1>
@@ -68,6 +68,10 @@ const DeliveryAndShippingPolicy = () => {
           <h2 className="text-2xl font-semibold mb-4">
             TERMS OF SHIPPING AND DELIVERY
           </h2>
+          <p className="mb-4">
+            3.0. Delivery timelines we takes minimum 3-5 working days to
+            dispatch your product after receiving the payments
+          </p>
           <p className="mb-4">
             3.1. We partner with third-party logistics service providers in
             order to effectuate Product shipping and delivery to you (“Logistics

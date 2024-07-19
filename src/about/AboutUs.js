@@ -5,7 +5,7 @@ const AboutUs = () => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <main className="container mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 text-black">
+    <main className="container text-primary mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 ">
       <h1 className="text-3xl font-bold text-center mb-6">About Us</h1>
       <p className="text-lg mb-4">
         Welcome to Fastside Badge Reel, where innovation meets functionality.

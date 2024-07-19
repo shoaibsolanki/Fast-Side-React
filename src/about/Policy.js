@@ -10,7 +10,7 @@ const Policy = () => {
       <Typography>
         <title>Policy</title>
       </Typography>
-      <main className="container mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 text-black">
+      <main className="container mx-auto bg-white  my-10 text-primary">
         <h1 className="text-3xl font-bold mb-6 text-center">Policy</h1>
 
         <section className="mb-8">
@@ -328,7 +328,8 @@ const Policy = () => {
         </section>
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-wrap ">
-            CHANGES/AMENDMENT/<br/>
+            CHANGES/AMENDMENT/
+            <br />
             MODIFICATION TO THE PRIVACY POLICY:{" "}
           </h2>
           <p className="mb-4">
