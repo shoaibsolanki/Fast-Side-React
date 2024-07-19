@@ -13,6 +13,7 @@ const ItemsShowInSide = ({ items }) => {
   const handleRemoveCoupon = () => {
     setDiscount(0);
   };
+  console.log(items);
 
   return (
     <div className="my-4 w-full md:w-[500px] h-full mx-auto border border-gray-300 p-6 rounded-md text-dark">
@@ -29,8 +30,8 @@ const ItemsShowInSide = ({ items }) => {
               />
               <div className="flex-1">
                 <h3 className="font-semibold">
-                  {item.itemName.slice(0, 30)}
-                  {item.itemName.length > 30 ? "..." : ""}
+                  {item.itemName?.slice(0, 30)}
+                  {item.itemName?.length > 30 ? "..." : ""}
                 </h3>
                 <p>Color: {item.image_name}</p>
               </div>

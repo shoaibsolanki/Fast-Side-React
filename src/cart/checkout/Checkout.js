@@ -12,10 +12,10 @@ const Checkout = () => {
   const { cart, totalPirce } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  if (!isAuthenticated) {
-    return navigate("/login");
-  }
-  if (cart.lenght === 0) {
+  // if (!isAuthenticated) {
+  //   return navigate("/login");
+  // }
+  if (cart?.lenght === 0) {
     return navigate("/");
   } else
     return (
