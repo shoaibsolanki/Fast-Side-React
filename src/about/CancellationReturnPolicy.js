@@ -10,7 +10,7 @@ const CancellationReturnPolicy = () => {
       <Head>
         <title>CANCELLATION, RETURN, AND REFUND POLICY</title>
       </Head>
-      <main className="container mx-auto bg-white rounded-lg shadow-md p-6 md:p-12 my-10 text-black">
+      <main className="container mx-auto bg-white  my-10 text-primary">
         <h1 className="text-3xl font-bold mb-6 text-center">
           CANCELLATION, RETURN, AND REFUND POLICY{" "}
         </h1>

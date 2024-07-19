@@ -1,13 +1,13 @@
-"use client";
 import { useAuth } from "../../contexts/AuthConext";
 import { useCart } from "../../contexts/CartContext";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import DataService from "../../services/requestApi";
-import { Add, Money } from "@mui/icons-material";
+import { Add, Money, Payment, Payments } from "@mui/icons-material";
 import { BASEURL } from "../../services/http-Pos";
 import { useNavigate } from "react-router-dom";
+
 const CheckoutPage = () => {
   const { authData, setIsPaymentSuccessful } = useAuth();
   const { cart, totalPrice, clearCart } = useCart();
@@ -20,9 +20,11 @@ const CheckoutPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedMethod, setSelectedMethod] = useState("cod");
 
-  const handlePaymentChange = (event) => {
-    setSelectedMethod(event.target.value);
+  const handlePaymentChange = (type) => {
+    setSelectedMethod(type);
+    console.log(selectedMethod);
   };
+
   const {
     register,
     handleSubmit,
@@ -57,15 +59,17 @@ const CheckoutPage = () => {
         currency: "INR",
       };
 
+      const authHeader = `Basic ${btoa(
+        "rzp_test_USk6kNFvt2WXOE:afZsDDDaTvqhZPxMLH1p0b2t"
+      )}`;
+
       const response = await axios.post(
         `${BASEURL.ENDPOINT_URL}rezar/pay/1`,
         data,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${Buffer.from(
-              `rzp_test_USk6kNFvt2WXOE:afZsDDDaTvqhZPxMLH1p0b2t`
-            ).toString("base64")}`,
+            Authorization: authHeader,
           },
         }
       );
@@ -119,6 +123,7 @@ const CheckoutPage = () => {
   const onSubmit = async (data) => {
     handleRazorpayPayment(data);
   };
+
   const handleSaveAddress = async (data) => {
     const addressForSave = {
       address: `${data.street},${data.city},${data.state},${data.zipcode} at ${data.address_type}`,
@@ -135,6 +140,7 @@ const CheckoutPage = () => {
 
     await saveAddress(addressForSave);
   };
+
   const handlePlaceOrder = async (data, paymentResponse) => {
     try {
       const orderInformations = {
@@ -162,8 +168,8 @@ const CheckoutPage = () => {
       localStorage.setItem("orderMaster", JSON.stringify(response.data));
       console.log("Order placed:", response);
 
-      if ((response.status = "200")) {
-        console.log("order placed");
+      if (response.status === 200) {
+        console.log("Order placed");
         document.getElementById("my_modal_5").showModal();
         clearCart();
         setIsPaymentSuccessful(true);
@@ -415,24 +421,52 @@ const CheckoutPage = () => {
         </div>
       )}
       <div className="p-4 border-[1px] rounded-md">
-        <div className="p-2 border-[2px] border-dark rounded-md flex justify-between items-center bg-gray-100 ">
+        <div
+          onClick={() => handlePaymentChange("cod")}
+          className={`mt-2 p-2 border-[2px] ${
+            selectedMethod === "cod" ? "border-dark" : ""
+          } rounded-md flex justify-between items-center bg-gray-100 `}
+        >
           <div className="flex gap-2 text-dark">
             <input
               type="radio"
               name="paymentMethod"
               value="cod"
               checked={selectedMethod === "cod"}
-              onChange={handlePaymentChange}
+              onChange={() => handlePaymentChange("cod")}
               className="mr-2"
             />
             <h3 className="font-semibold italic">COD</h3>
           </div>
           <Money className="text-black" />
         </div>
+        <div
+          onClick={() => handlePaymentChange("online")}
+          className={`mt-2 p-2 border-[2px] ${
+            selectedMethod === "online" ? "border-dark" : ""
+          } rounded-md flex justify-between items-center bg-gray-100 `}
+        >
+          <div className="flex gap-2 text-dark">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="online"
+              checked={selectedMethod === "online"}
+              onChange={() => handlePaymentChange("online")}
+              className="mr-2"
+            />
+            <h3 className="font-semibold italic">Pay online</h3>
+          </div>
+          <Payment className="text-black" />
+        </div>
       </div>
 
       <button
-        onClick={handleSubmit(handlePlaceOrder)}
+        onClick={
+          selectedMethod === "cod"
+            ? handleSubmit(handlePlaceOrder)
+            : handleSubmit(onSubmit)
+        }
         className="w-full py-3 bg-second text-white rounded-md text-lg font-semibold hover:bg-yellow-600 transition-colors"
       >
         Place Order

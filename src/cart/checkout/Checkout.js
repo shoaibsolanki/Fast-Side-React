@@ -15,7 +15,7 @@ const Checkout = () => {
   if (!isAuthenticated) {
     return navigate("/login");
   }
-  if (cart?.lenght == 0) {
+  if (cart.lenght === 0) {
     return navigate("/");
   } else
     return (
