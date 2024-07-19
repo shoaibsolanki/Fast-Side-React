@@ -305,9 +305,9 @@ const CheckoutPage = () => {
   };
   return (
     <div className="w-full mx-auto p-4">
-      <div className="border border-gray-300 p-6 mb-6 rounded-md">
+     {!isAuthenticated &&  <div className="border border-gray-300 p-6 mb-6 rounded-md">
         <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
-  {!isAuthenticated &&<div>
+ 
         {step === 1 && (
         <form onSubmit={handleSubmit(onSubmitFirstStep)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-group">
@@ -391,7 +391,7 @@ const CheckoutPage = () => {
         </Alert>
       </Snackbar>
       </div>}
-      </div>
+ 
 
       {showNewAddressForm ? (
         <div className="border border-gray-300 p-6 mb-6 rounded-md">
