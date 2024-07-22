@@ -55,7 +55,7 @@ export const CartProvider = ({ children }) => {
 
   const getCartItems = async (userId) => {
     try {
-      const response = await DataService.GetCartItems(saasId, storeId, userId);
+      const response = await DataService.GetCartItems("33", "33001", userId);
       const fetchedCart = response?.data?.data?.products;
       console.log("first",id, saasId, storeId )
 

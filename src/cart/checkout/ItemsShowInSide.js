@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { Remove } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+import { useAuth } from "../../contexts/AuthConext";
 const ItemsShowInSide = ({ items }) => {
   const { totalPrice, handleIncrease, handleDecrease } = useCart();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [total, setTotal] = useState(totalPrice);
-
+const {isAuthenticated}=useAuth()
   const handleApplyCoupon = () => {};
 
   const handleRemoveCoupon = () => {
@@ -23,7 +24,13 @@ const ItemsShowInSide = ({ items }) => {
           return (
             <div className="flex items-center space-x-4" key={index}>
               <img
-                src={item.image_url}
+              src={
+                isAuthenticated
+                  ? item?.image_url
+                    ? item?.image_url
+                    : "/default-image.jpg"
+                  : item?.colorList?.length > 0 && item?.colorList[0].image_url
+              }
                 alt="Badge Reel"
                 width={50}
                 height={50}

@@ -502,7 +502,9 @@ const CheckoutPage = () => {
           </form>
         </div>
       ) : (
-        <div className="border  gap-4 border-gray-300 p-6 mb-6 rounded-md">
+        <>
+        {isAuthenticated &&
+           <div className="border  gap-4 border-gray-300 p-6 mb-6 rounded-md">
           {savedAddresses.map((item, index) => {
             return (
               <div
@@ -541,7 +543,8 @@ const CheckoutPage = () => {
           >
             <Add fontSize="large" />
           </button>
-        </div>
+        </div>}
+        </>
       )}
       <div className="p-4 border-[1px] rounded-md">
         <div

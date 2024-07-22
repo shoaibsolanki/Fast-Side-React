@@ -1,19 +1,19 @@
-"use client";
 import { useAuth } from "../../contexts/AuthConext";
 import { useCart } from "../../contexts/CartContext";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import DataService from "../../services/requestApi";
-import { Add, Money } from "@mui/icons-material";
+import { Add, Money, Payment } from "@mui/icons-material";
 import { BASEURL } from "../../services/http-Pos";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const CheckoutPage = () => {
-  const { authData, setIsPaymentSuccessful } = useAuth();
+  const { authData, setIsPaymentSuccessful, login,isAuthenticated,name } = useAuth();
   const { cart, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const { id, saasId, storeId } = authData;
+  const { id, saasId, storeId ,} = authData;
 
   const [billingAddress, setBillingAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -21,9 +21,11 @@ const CheckoutPage = () => {
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedMethod, setSelectedMethod] = useState("cod");
 
-  const handlePaymentChange = (event) => {
-    setSelectedMethod(event.target.value);
+  const handlePaymentChange = (type) => {
+    setSelectedMethod(type);
+    console.log(selectedMethod);
   };
+
   const {
     register,
     handleSubmit,
@@ -58,15 +60,17 @@ const CheckoutPage = () => {
         currency: "INR",
       };
 
+      const authHeader = `Basic ${btoa(
+        "rzp_test_USk6kNFvt2WXOE:afZsDDDaTvqhZPxMLH1p0b2t"
+      )}`;
+
       const response = await axios.post(
         `${BASEURL.ENDPOINT_URL}rezar/pay/1`,
         data,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${Buffer.from(
-              `rzp_test_USk6kNFvt2WXOE:afZsDDDaTvqhZPxMLH1p0b2t`
-            ).toString("base64")}`,
+            Authorization: authHeader,
           },
         }
       );
@@ -120,6 +124,7 @@ const CheckoutPage = () => {
   const onSubmit = async (data) => {
     handleRazorpayPayment(data);
   };
+
   const handleSaveAddress = async (data) => {
     const addressForSave = {
       address: `${data.street},${data.city},${data.state},${data.zipcode} at ${data.address_type}`,
@@ -136,12 +141,13 @@ const CheckoutPage = () => {
 
     await saveAddress(addressForSave);
   };
+  const [customerName,setCustomerName]= useState()
   const handlePlaceOrder = async (data, paymentResponse) => {
     try {
       const orderInformations = {
         address_id: data.address_id,
         customer_id: id,
-        customer_name: `${data.first_name} ${data.last_name}`,
+        customer_name: name,
         mobile_number: data.Mobile_numbers,
         saas_id: saasId,
         store_id: storeId,
@@ -163,8 +169,8 @@ const CheckoutPage = () => {
       localStorage.setItem("orderMaster", JSON.stringify(response.data));
       console.log("Order placed:", response);
 
-      if ((response.status = "200")) {
-        console.log("order placed");
+      if (response.status === 200) {
+        console.log("Order placed");
         document.getElementById("my_modal_5").showModal();
         clearCart();
         setIsPaymentSuccessful(true);
@@ -207,27 +213,31 @@ const CheckoutPage = () => {
   };
 
 
+  // autenticationPart 
 
-
-  // autentiion 
-
+  
   const [step, setStep] = useState(1);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const BASE_URL = 'http://103.139.59.233:8089/prod/api/v1';
+  const handleCloseSnackbar = () => {
+    setSnackbar({ open: false, message: '', severity: '' });
+  };
 
   const onSubmitFirstStep = async (data) => {
     try {
       setPhoneNumber(data.mobile_numbers);
       const response = await axios.get(`${BASE_URL}/otp/resend-otp/${data.mobile_numbers}`);
       if (response.status === 200) {
+        setSnackbar({ open: true, message: 'OTP sent successfully!', severity: 'success' });
+
         setStep(2);
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      setSnackbar({ open: true, message: 'Failed to send OTP.', severity: 'error' });
     }
   };
 
@@ -238,12 +248,14 @@ const CheckoutPage = () => {
         otp: data.otp
       });
       if (response.status === 200) {
+        setSnackbar({ open: true, message: 'OTP validated successfully!', severity: 'success' });
         setStep(3);
       }
     } catch (error) {
-      console.error("Error validating OTP:", error);
+      setSnackbar({ open: true, message: 'Failed to validate OTP.', severity: 'error' });
     }
   };
+
 
   const onSubmitThirdStep = async (data) => {
     try {
@@ -251,64 +263,57 @@ const CheckoutPage = () => {
         mobile_number: phoneNumber,
         password: data.password,
         customer_name: `${data.first_name} ${data.last_name}`,
-        store_id: storeId,
-        saas_id: saasId,
+        store_id: "33001",
+        saas_id: "33",
       });
       if (response.status === 200) {
+        setCustomerName(data.first_name,data.last_name)
+      
+        setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
         // Registration successful, handle next steps
+        handleLoginSubmit(data.password);
       }
     } catch (error) {
-      console.error("Error registering user:", error);
+      setSnackbar({ open: true, message: 'Failed to register.', severity: 'error' });
     }
   };
 
 
-  const handleLoginSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setErrorAlert(false);
-
+  const handleLoginSubmit = async (password) => {
     try {
-      const response = await DataService.Login({ user_name: userName, password: password });
+      const response = await axios.post(`${BASE_URL}/auth/user-login`, { user_name: phoneNumber, password: password });
       const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
       if (response.data.status) {
         const token = response.data.data.jwt_response;
         const user = response.data.data.customer_data;
+        // Handle login success, e.g., store token, navigate to dashboard, etc.
+        setSnackbar({ open: true, message: 'Login successful!', severity: 'success' });
 
         if (token && user) {
           login(user, token);
           if (redirectUrl) {
             sessionStorage.removeItem("redirectAfterLogin");
             navigate(redirectUrl);
-          } else {
-            navigate("/");
-          }
-        } else {
-          setErrorAlert(true);
-          setError("User not found. Email or Password incorrect");
-        }
+          } 
+        } 
       } else {
-        setErrorAlert(true);
-        setError("Invalid login credentials");
+        // Handle login failure
       }
     } catch (error) {
-      setErrorAlert(true);
-      setError("User not found. Email or Password incorrect");
-    } finally {
-      setIsSubmitting(false);
+      // Handle error
     }
   };
-
   return (
     <div className="w-full mx-auto p-4">
-      <div className="border border-gray-300 p-6 mb-6 rounded-md">
+     {!isAuthenticated &&  <div className="border border-gray-300 p-6 mb-6 rounded-md">
         <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
+ 
         {step === 1 && (
         <form onSubmit={handleSubmit(onSubmitFirstStep)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-group">
             <label htmlFor="firstName" className="text-sm font-semibold">First Name</label>
             <input
-              {...register("first_name", { required: true })}
+              {...register("first_name", { required: false })}
               type="text"
               id="firstName"
               placeholder="First name"
@@ -319,7 +324,7 @@ const CheckoutPage = () => {
           <div className="form-group">
             <label htmlFor="lastName" className="text-sm font-semibold">Last Name</label>
             <input
-              {...register("last_name", { required: true })}
+              {...register("last_name", { required: false })}
               type="text"
               id="lastName"
               placeholder="Last name"
@@ -330,7 +335,7 @@ const CheckoutPage = () => {
           <div className="form-group">
             <label htmlFor="phoneNumber" className="text-sm font-semibold">Phone Number</label>
             <input
-              {...register("mobile_numbers", { required: true })}
+              {...register("mobile_numbers", { required: false })}
               type="number"
               id="phoneNumber"
               placeholder="Phone number"
@@ -375,7 +380,18 @@ const CheckoutPage = () => {
           <button type="submit" className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors" >Register</button>
         </form>
       )}
-      </div>
+
+<Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      </div>}
+ 
 
       {showNewAddressForm ? (
         <div className="border border-gray-300 p-6 mb-6 rounded-md">
@@ -528,24 +544,52 @@ const CheckoutPage = () => {
         </div>
       )}
       <div className="p-4 border-[1px] rounded-md">
-        <div className="p-2 border-[2px] border-dark rounded-md flex justify-between items-center bg-gray-100 ">
+        <div
+          onClick={() => handlePaymentChange("cod")}
+          className={`mt-2 p-2 border-[2px] ${
+            selectedMethod === "cod" ? "border-dark" : ""
+          } rounded-md flex justify-between items-center bg-gray-100 `}
+        >
           <div className="flex gap-2 text-dark">
             <input
               type="radio"
               name="paymentMethod"
               value="cod"
               checked={selectedMethod === "cod"}
-              onChange={handlePaymentChange}
+              onChange={() => handlePaymentChange("cod")}
               className="mr-2"
             />
             <h3 className="font-semibold italic">COD</h3>
           </div>
           <Money className="text-black" />
         </div>
+        <div
+          onClick={() => handlePaymentChange("online")}
+          className={`mt-2 p-2 border-[2px] ${
+            selectedMethod === "online" ? "border-dark" : ""
+          } rounded-md flex justify-between items-center bg-gray-100 `}
+        >
+          <div className="flex gap-2 text-dark">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="online"
+              checked={selectedMethod === "online"}
+              onChange={() => handlePaymentChange("online")}
+              className="mr-2"
+            />
+            <h3 className="font-semibold italic">Pay online</h3>
+          </div>
+          <Payment className="text-black" />
+        </div>
       </div>
 
       <button
-        onClick={handleSubmit(handlePlaceOrder)}
+        onClick={
+          selectedMethod === "cod"
+            ? handleSubmit(handlePlaceOrder)
+            : handleSubmit(onSubmit)
+        }
         className="w-full py-3 bg-second text-white rounded-md text-lg font-semibold hover:bg-yellow-600 transition-colors"
       >
         Place Order
