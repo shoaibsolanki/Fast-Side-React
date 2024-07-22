@@ -256,15 +256,37 @@ const CheckoutPage = () => {
     }
   };
 
+  // Get the current date
+  const today = new Date();
 
+  // Extract the date part (without the time)
+  const currentDate = today.toLocaleDateString();
   const onSubmitThirdStep = async (data) => {
     try {
-      const response = await axios.post(`${BASE_URL}/user-master/customer-sign-up`, {
+      const response = await axios.post(`${BASE_URL}/customer/create`, {
+        sub_centre_id: 1,
         mobile_number: phoneNumber,
         password: data.password,
+        address_3: "Building 5",
+        discount_percent: 10.0,
+        email:"admin123@gmail.com",
         customer_name: `${data.first_name} ${data.last_name}`,
+        card_number: Math.ceil(Math.random() * 10000),
         store_id: "33001",
         saas_id: "33",
+        city: "city",
+        state: "state",
+        country: "India",
+        preferred_language: "English",
+        customer_since: currentDate,
+        payment_terms: 30,
+        credit_limit: 10000.0,
+        sales_representative: "Jane Smith",
+        gender: "male",
+        occupation: "occ",
+        income_level: 50000,
+        source_of_acq: "online",
+        customer_type: "CUSTOMER",
       });
       if (response.status === 200) {
         setCustomerName(data.first_name,data.last_name)
