@@ -55,7 +55,7 @@ export const CartProvider = ({ children }) => {
 
   const getCartItems = async (userId) => {
     try {
-      const response = await DataService.GetCartItems("33", "33001", userId);
+      const response = await DataService.GetCartItems(saasId, storeId, userId);
       const fetchedCart = response?.data?.data?.products;
       console.log("first",id, saasId, storeId )
 
@@ -78,9 +78,9 @@ export const CartProvider = ({ children }) => {
       const storedCart = localStorage.getItem("cart");
       if (storedCart) {
         const localStorageCart = JSON.parse(storedCart);
-        for (const item of localStorageCart) {
-          await AddProductInTheCart(item, userId);
-        }
+   
+          await AddProductlist(localStorageCart, userId);
+       
         localStorage.removeItem("cart");
       }
     }
@@ -112,6 +112,19 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const AddProductlist = async (product, userId = id) => {
+    try {
+      const response = await DataService.AddItemsToList(
+        product,
+        saasId,
+        storeId,
+        userId
+      );
+      getCartItems(userId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const deleteItem = async (itemid) => {
     try {
       await DataService.DeleteItemsFromCart(saasId, storeId, id, itemid);

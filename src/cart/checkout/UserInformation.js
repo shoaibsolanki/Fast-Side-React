@@ -17,7 +17,7 @@ const CheckoutPage = () => {
 
   const [billingAddress, setBillingAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
-  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+  const [showNewAddressForm, setShowNewAddressForm] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedMethod, setSelectedMethod] = useState("cod");
 
@@ -143,6 +143,7 @@ const CheckoutPage = () => {
   };
   const [customerName,setCustomerName]= useState()
   const handlePlaceOrder = async (data, paymentResponse) => {
+   
     try {
       const orderInformations = {
         address_id: data.address_id,
@@ -256,12 +257,15 @@ const CheckoutPage = () => {
     }
   };
 
-  // Get the current date
-  const today = new Date();
-
-  // Extract the date part (without the time)
-  const currentDate = today.toLocaleDateString();
   const onSubmitThirdStep = async (data) => {
+    if (data.password !== data.confirmPassword) {
+      setSnackbar({ open: true, message: 'Passwords do not match.', severity: 'error' });
+      return;
+    }
+  
+    const today = new Date();
+    const currentDate = today.toLocaleDateString();
+  
     try {
       const response = await axios.post(`${BASE_URL}/customer/create`, {
         sub_centre_id: 1,
@@ -269,7 +273,7 @@ const CheckoutPage = () => {
         password: data.password,
         address_3: "Building 5",
         discount_percent: 10.0,
-        email:"admin123@gmail.com",
+        email: "admin123@gmail.com",
         customer_name: `${data.first_name} ${data.last_name}`,
         card_number: Math.ceil(Math.random() * 10000),
         store_id: "33001",
@@ -289,8 +293,7 @@ const CheckoutPage = () => {
         customer_type: "CUSTOMER",
       });
       if (response.status === 200) {
-        setCustomerName(data.first_name,data.last_name)
-      
+        setCustomerName(data.first_name, data.last_name);
         setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
         // Registration successful, handle next steps
         handleLoginSubmit(data.password);
@@ -314,8 +317,10 @@ const CheckoutPage = () => {
         if (token && user) {
           login(user, token);
           if (redirectUrl) {
+            setTimeout(() => {
             sessionStorage.removeItem("redirectAfterLogin");
             navigate(redirectUrl);
+          }, 1000);
           } 
         } 
       } else {
@@ -328,7 +333,7 @@ const CheckoutPage = () => {
   return (
     <div className="w-full mx-auto p-4">
      {!isAuthenticated &&  <div className="border border-gray-300 p-6 mb-6 rounded-md">
-        <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
+        <h2 className="text-lg font-semibold mb-4">Register Information</h2>
  
         {step === 1 && (
         <form onSubmit={handleSubmit(onSubmitFirstStep)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -386,22 +391,33 @@ const CheckoutPage = () => {
         </form>
       )}
 
-      {step === 3 && (
-        <form onSubmit={handleSubmit(onSubmitThirdStep)} className="grid grid-cols-1 gap-4">
-          <div className="form-group">
-            <label htmlFor="password" className="text-sm font-semibold">Password</label>
-            <input
-              {...register("password", { required: true })}
-              type="password"
-              id="password"
-              placeholder="Password"
-              className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-            />
-            {errors.password && <span>This field is required</span>}
-          </div>
-          <button type="submit" className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors" >Register</button>
-        </form>
-      )}
+{step === 3 && (
+  <form onSubmit={handleSubmit(onSubmitThirdStep)} className="grid grid-cols-1 gap-4">
+    <div className="form-group">
+      <label htmlFor="password" className="text-sm font-semibold">Password</label>
+      <input
+        {...register("password", { required: true })}
+        type="password"
+        id="password"
+        placeholder="Password"
+        className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+      />
+      {errors.password && <span>This field is required</span>}
+    </div>
+    <div className="form-group">
+      <label htmlFor="confirmPassword" className="text-sm font-semibold">Confirm Password</label>
+      <input
+        {...register("confirmPassword", { required: true })}
+        type="password"
+        id="confirmPassword"
+        placeholder="Confirm Password"
+        className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+      />
+      {errors.confirmPassword && <span>This field is required</span>}
+    </div>
+    <button type="submit" className="h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors">Register</button>
+  </form>
+)}
 
 <Snackbar
         open={snackbar.open}
