@@ -33,6 +33,13 @@ class DataService {
       item
     );
   }
+
+  AddItemsToList(item, saasId, storeId, id) {
+    return https.post(
+      `/price-check/addproductlist/${saasId}/${storeId}/${id}`,
+      item
+    );
+  }
   DeleteItemsFromCart(saasId, storeId, id, itemid) {
     return https.delete(
       `/price-check/deleteproduct/${saasId}/${storeId}/${id}/${itemid}`

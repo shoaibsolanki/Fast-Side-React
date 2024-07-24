@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { Remove } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+<<<<<<< HEAD
 
+=======
+import { useAuth } from "../../contexts/AuthConext";
+>>>>>>> c246d75f4c1329d84a858c6203b2d6bc78fe504c
 const ItemsShowInSide = ({ items }) => {
   const { totalPrice, handleIncrease, handleDecrease, cart } = useCart();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [total, setTotal] = useState(totalPrice);
-
+const {isAuthenticated}=useAuth()
   const handleApplyCoupon = () => {};
 
   const handleRemoveCoupon = () => {
@@ -24,7 +28,17 @@ const ItemsShowInSide = ({ items }) => {
           return (
             <div className="flex items-center space-x-4" key={index}>
               <img
+<<<<<<< HEAD
                 src={item.image_url ? item.image_url : item.image_name1}
+=======
+              src={
+                isAuthenticated
+                  ? item?.image_url
+                    ? item?.image_url
+                    : "/default-image.jpg"
+                  : item?.colorList?.length > 0 && item?.colorList[0].image_url
+              }
+>>>>>>> c246d75f4c1329d84a858c6203b2d6bc78fe504c
                 alt="Badge Reel"
                 width={50}
                 height={50}

@@ -71,10 +71,10 @@ const Login = () => {
             {...register("user_name", { required: true })}
             className="border-2 bg-white rounded h-9 w-full md:w-80 focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
             type="text"
-            placeholder="Email"
+            placeholder="Phone Number"
           />
           {errors.user_name && (
-            <p className="text-red-500">Email is required</p>
+            <p className="text-red-500">Phone Number is required</p>
           )}
           <input
             {...register("password", { required: true })}
@@ -92,10 +92,10 @@ const Login = () => {
             value="Login"
           />
           <p>
-            Don't have an account?{" "}
-            <Link className="hover:text-second font-medium" to="/Signup">
+            {/* Don't have an account?{" "} */}
+            {/* <Link className="hover:text-second font-medium" to="/Signup">
               Register
-            </Link>
+            </Link> */}
           </p>
           {errorAlert && <Alert severity="error">{error}</Alert>}
         </form>
