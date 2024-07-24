@@ -7,20 +7,24 @@ import DataService from "../../services/requestApi";
 import { Add, Money, Payment } from "@mui/icons-material";
 import { BASEURL } from "../../services/http-Pos";
 import { useNavigate } from "react-router-dom";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 const CheckoutPage = () => {
-  const { authData, setIsPaymentSuccessful, login,isAuthenticated,name } = useAuth();
+  const { authData, setIsPaymentSuccessful, login, isAuthenticated, name } =
+    useAuth();
   const { cart, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const { id, saasId, storeId ,} = authData;
-
+  const { id, saasId, storeId } = authData;
   const [billingAddress, setBillingAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showNewAddressForm, setShowNewAddressForm] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedMethod, setSelectedMethod] = useState("cod");
-
+  useEffect(() => {
+    if (showNewAddressForm) {
+      setSelectedAddress(null);
+    }
+  }, [showNewAddressForm]);
   const handlePaymentChange = (type) => {
     setSelectedMethod(type);
     console.log(selectedMethod);
@@ -65,7 +69,7 @@ const CheckoutPage = () => {
       )}`;
 
       const response = await axios.post(
-        `${BASEURL.ENDPOINT_URL}rezar/pay/1`,
+        `${BASEURL.ENDPOINT_URL}/rezar/pay/1`,
         data,
         {
           headers: {
@@ -120,6 +124,13 @@ const CheckoutPage = () => {
       console.error("Error handling Razorpay payment:", error);
     }
   };
+  const deleteAddress = async (id, saasId, storeId) => {
+    try {
+      const response = await DataService.DeleteAddress(id, saasId, storeId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const onSubmit = async (data) => {
     handleRazorpayPayment(data);
@@ -127,7 +138,7 @@ const CheckoutPage = () => {
 
   const handleSaveAddress = async (data) => {
     const addressForSave = {
-      address: `${data.street},${data.city},${data.state},${data.zipcode} at ${data.address_type}`,
+      address: `${data.street},${data.city},${data.state}`,
       address_type: data.address_type,
       street: data.street,
       store_id: storeId,
@@ -141,9 +152,9 @@ const CheckoutPage = () => {
 
     await saveAddress(addressForSave);
   };
-  const [customerName,setCustomerName]= useState()
+  console.log("savedaddress", savedAddresses);
+  const [customerName, setCustomerName] = useState();
   const handlePlaceOrder = async (data, paymentResponse) => {
-   
     try {
       const orderInformations = {
         address_id: data.address_id,
@@ -213,116 +224,162 @@ const CheckoutPage = () => {
     navigate("/cart/checkout/summary");
   };
 
+  // autenticationPart
 
-  // autenticationPart 
-
-  
   const [step, setStep] = useState(1);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
-  const BASE_URL = 'http://103.139.59.233:8089/prod/api/v1';
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
   const handleCloseSnackbar = () => {
-    setSnackbar({ open: false, message: '', severity: '' });
+    setSnackbar({ open: false, message: "", severity: "" });
   };
 
   const onSubmitFirstStep = async (data) => {
     try {
       setPhoneNumber(data.mobile_numbers);
-      const response = await axios.get(`${BASE_URL}/otp/resend-otp/${data.mobile_numbers}`);
+      const response = await axios.get(
+        `${BASEURL.ENDPOINT_URL}otp/resend-otp/${data.mobile_numbers}`
+      );
       if (response.status === 200) {
-        setSnackbar({ open: true, message: 'OTP sent successfully!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: "OTP sent successfully!",
+          severity: "success",
+        });
 
         setStep(2);
       }
     } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to send OTP.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Failed to send OTP.",
+        severity: "error",
+      });
     }
   };
 
   const onSubmitSecondStep = async (data) => {
     try {
-      const response = await axios.post(`${BASE_URL}/otp/validate-otp`, {
-        mobile_no: phoneNumber,
-        otp: data.otp
-      });
+      const response = await axios.post(
+        `${BASEURL.ENDPOINT_URL}otp/validate-otp`,
+        {
+          mobile_no: phoneNumber,
+          otp: data.otp,
+        }
+      );
       if (response.status === 200) {
-        setSnackbar({ open: true, message: 'OTP validated successfully!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: "OTP validated successfully!",
+          severity: "success",
+        });
         setStep(3);
       }
     } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to validate OTP.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Failed to validate OTP.",
+        severity: "error",
+      });
     }
   };
 
   const onSubmitThirdStep = async (data) => {
     if (data.password !== data.confirmPassword) {
-      setSnackbar({ open: true, message: 'Passwords do not match.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Passwords do not match.",
+        severity: "error",
+      });
       return;
     }
-  
+
     const today = new Date();
     const currentDate = today.toLocaleDateString();
-  
+
     try {
-      const response = await axios.post(`${BASE_URL}/customer/create`, {
-        sub_centre_id: 1,
-        mobile_number: phoneNumber,
-        password: data.password,
-        address_3: "Building 5",
-        discount_percent: 10.0,
-        email: "admin123@gmail.com",
-        customer_name: `${data.first_name} ${data.last_name}`,
-        card_number: Math.ceil(Math.random() * 10000),
-        store_id: "33001",
-        saas_id: "33",
-        city: "city",
-        state: "state",
-        country: "India",
-        preferred_language: "English",
-        customer_since: currentDate,
-        payment_terms: 30,
-        credit_limit: 10000.0,
-        sales_representative: "Jane Smith",
-        gender: "male",
-        occupation: "occ",
-        income_level: 50000,
-        source_of_acq: "online",
-        customer_type: "CUSTOMER",
-      });
+      const response = await axios.post(
+        `${BASEURL.ENDPOINT_URL}customer/create`,
+        {
+          sub_centre_id: 1,
+          mobile_number: phoneNumber,
+          password: data.password,
+          address_3: "Building 5",
+          discount_percent: 10.0,
+          email: "admin123@gmail.com",
+          customer_name: `${data.first_name} ${data.last_name}`,
+          card_number: Math.ceil(Math.random() * 10000),
+          store_id: "33001",
+          saas_id: "33",
+          city: "city",
+          state: "state",
+          country: "India",
+          preferred_language: "English",
+          customer_since: currentDate,
+          payment_terms: 30,
+          credit_limit: 10000.0,
+          sales_representative: "Jane Smith",
+          gender: "male",
+          occupation: "occ",
+          income_level: 50000,
+          source_of_acq: "online",
+          customer_type: "CUSTOMER",
+        }
+      );
       if (response.status === 200) {
         setCustomerName(data.first_name, data.last_name);
-        setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: "Registration successful!",
+          severity: "success",
+        });
         // Registration successful, handle next steps
         handleLoginSubmit(data.password);
       }
     } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to register.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Failed to register.",
+        severity: "error",
+      });
     }
   };
 
-
   const handleLoginSubmit = async (password) => {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/user-login`, { user_name: phoneNumber, password: password });
+      const response = await axios.post(
+        `${BASEURL.ENDPOINT_URL}auth/user-login`,
+        {
+          user_name: phoneNumber,
+          password: password,
+        }
+      );
       const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
       if (response.data.status) {
         const token = response.data.data.jwt_response;
         const user = response.data.data.customer_data;
         // Handle login success, e.g., store token, navigate to dashboard, etc.
-        setSnackbar({ open: true, message: 'Login successful!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: "Login successful!",
+          severity: "success",
+        });
 
         if (token && user) {
           login(user, token);
           if (redirectUrl) {
             setTimeout(() => {
-            sessionStorage.removeItem("redirectAfterLogin");
-            navigate(redirectUrl);
-          }, 1000);
-          } 
-        } 
+              sessionStorage.removeItem("redirectAfterLogin");
+              navigate(redirectUrl);
+            }, 1000);
+          }
+        }
       } else {
         // Handle login failure
       }
@@ -332,108 +389,157 @@ const CheckoutPage = () => {
   };
   return (
     <div className="w-full mx-auto p-4">
-     {!isAuthenticated &&  <div className="border border-gray-300 p-6 mb-6 rounded-md">
-        <h2 className="text-lg font-semibold mb-4">Register Information</h2>
- 
-        {step === 1 && (
-        <form onSubmit={handleSubmit(onSubmitFirstStep)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="form-group">
-            <label htmlFor="firstName" className="text-sm font-semibold">First Name</label>
-            <input
-              {...register("first_name", { required: false })}
-              type="text"
-              id="firstName"
-              placeholder="First name"
-              className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-            />
-            {errors.first_name && <span>This field is required</span>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName" className="text-sm font-semibold">Last Name</label>
-            <input
-              {...register("last_name", { required: false })}
-              type="text"
-              id="lastName"
-              placeholder="Last name"
-              className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-            />
-            {errors.last_name && <span>This field is required</span>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="phoneNumber" className="text-sm font-semibold">Phone Number</label>
-            <input
-              {...register("mobile_numbers", { required: false })}
-              type="number"
-              id="phoneNumber"
-              placeholder="Phone number"
-              className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-            />
-            {errors.mobile_numbers && <span>This field is required</span>}
-          </div>
-          <button type="submit"     className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors">Next</button>
-        </form>
-      )}
-
-      {step === 2 && (
-        <form onSubmit={handleSubmit(onSubmitSecondStep)} className="grid grid-cols-1 gap-4">
-          <div className="form-group">
-            <label htmlFor="otp" className="text-sm font-semibold">Enter OTP</label>
-            <input
-              {...register("otp", { required: true })}
-              type="text"
-              id="otp"
-              placeholder="OTP"
-              className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-            />
-            {errors.otp && <span>This field is required</span>}
-          </div>
-          <button type="submit" className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors">Validate OTP</button>
-        </form>
-      )}
-
-{step === 3 && (
-  <form onSubmit={handleSubmit(onSubmitThirdStep)} className="grid grid-cols-1 gap-4">
-    <div className="form-group">
-      <label htmlFor="password" className="text-sm font-semibold">Password</label>
-      <input
-        {...register("password", { required: true })}
-        type="password"
-        id="password"
-        placeholder="Password"
-        className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-      />
-      {errors.password && <span>This field is required</span>}
-    </div>
-    <div className="form-group">
-      <label htmlFor="confirmPassword" className="text-sm font-semibold">Confirm Password</label>
-      <input
-        {...register("confirmPassword", { required: true })}
-        type="password"
-        id="confirmPassword"
-        placeholder="Confirm Password"
-        className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-      />
-      {errors.confirmPassword && <span>This field is required</span>}
-    </div>
-    <button type="submit" className="h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors">Register</button>
-  </form>
-)}
-
-<Snackbar
-        open={snackbar.open}
-        autoHideDuration={2000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      </div>}
- 
-
-      {showNewAddressForm ? (
+      {!isAuthenticated && (
         <div className="border border-gray-300 p-6 mb-6 rounded-md">
-          <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
+          <h2 className="text-lg font-semibold mb-4">Register Information</h2>
+
+          {step === 1 && (
+            <form
+              onSubmit={handleSubmit(onSubmitFirstStep)}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div className="form-group">
+                <label htmlFor="firstName" className="text-sm font-semibold">
+                  First Name
+                </label>
+                <input
+                  {...register("first_name", { required: false })}
+                  type="text"
+                  id="firstName"
+                  placeholder="First name"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.first_name && <span>This field is required</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName" className="text-sm font-semibold">
+                  Last Name
+                </label>
+                <input
+                  {...register("last_name", { required: false })}
+                  type="text"
+                  id="lastName"
+                  placeholder="Last name"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.last_name && <span>This field is required</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="phoneNumber" className="text-sm font-semibold">
+                  Phone Number
+                </label>
+                <input
+                  {...register("mobile_numbers", { required: false })}
+                  type="number"
+                  id="phoneNumber"
+                  placeholder="Phone number"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.mobile_numbers && <span>This field is required</span>}
+              </div>
+              <button
+                type="submit"
+                className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors"
+              >
+                Next
+              </button>
+            </form>
+          )}
+
+          {step === 2 && (
+            <form
+              onSubmit={handleSubmit(onSubmitSecondStep)}
+              className="grid grid-cols-1 gap-4"
+            >
+              <div className="form-group">
+                <label htmlFor="otp" className="text-sm font-semibold">
+                  Enter OTP
+                </label>
+                <input
+                  {...register("otp", { required: true })}
+                  type="text"
+                  id="otp"
+                  placeholder="OTP"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.otp && <span>This field is required</span>}
+              </div>
+              <button
+                type="submit"
+                className=" h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors"
+              >
+                Validate OTP
+              </button>
+            </form>
+          )}
+
+          {step === 3 && (
+            <form
+              onSubmit={handleSubmit(onSubmitThirdStep)}
+              className="grid grid-cols-1 gap-4"
+            >
+              <div className="form-group">
+                <label htmlFor="password" className="text-sm font-semibold">
+                  Password
+                </label>
+                <input
+                  {...register("password", { required: true })}
+                  type="password"
+                  id="password"
+                  placeholder="Password"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.password && <span>This field is required</span>}
+              </div>
+              <div className="form-group">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm font-semibold"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  {...register("confirmPassword", { required: true })}
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="Confirm Password"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                />
+                {errors.confirmPassword && <span>This field is required</span>}
+              </div>
+              <button
+                type="submit"
+                className="h-12 mt-5 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors"
+              >
+                Register
+              </button>
+            </form>
+          )}
+
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={2000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity={snackbar.severity}
+              sx={{ width: "100%" }}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+        </div>
+      )}
+
+      {showNewAddressForm && isAuthenticated ? (
+        <div className="border border-gray-300 p-6 mb-6 rounded-md">
+          <h3 className="text-primary uppercase font-medium text-sm">
+            <span className="bg-light py-[1px] px-[3px] text-sm rounded-sm mr-1 ">
+              1.2
+            </span>{" "}
+            add Shipping address
+          </h3>
           <form className="" onSubmit={handleSubmit(handleSaveAddress)}>
             <div className="grid gap-4 grid-cols-2 max-md:grid-cols-1 w-full">
               <div className="form-group ">
@@ -448,7 +554,7 @@ const CheckoutPage = () => {
                   type="text"
                   id="streetAddress"
                   placeholder="Street Address"
-                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
+                  className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full "
                 />
                 {errors.street && <span>This field is required</span>}
               </div>
@@ -524,7 +630,7 @@ const CheckoutPage = () => {
               <span></span>
               <button
                 type="submit"
-                className="w-full py-3 bg-second text-white text-lg font-semibold hover:bg-yellow-600 transition-colors"
+                className="text-primary border-[1px] border-gray-200 py-2 px-6 uppercase font-medium text-sm hover:bg-gray-100"
               >
                 Save address
               </button>
@@ -541,100 +647,120 @@ const CheckoutPage = () => {
         </div>
       ) : (
         <>
-        {isAuthenticated &&
-           <div className="border  gap-4 border-gray-300 p-6 mb-6 rounded-md">
-          {savedAddresses.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className="mx-auto flex flex-col md:flex-row w-full justify-between border-2 rounded-xl p-4 my-2 text-gray-700"
-              >
-                <div className="flex-grow">
-                  <h2 className="text-lg font-semibold mb-2">
-                    <span className="font-semibold">Address:</span>{" "}
-                    {item.address}
-                  </h2>
-                  <p className="mb-1">
-                    <span className="font-semibold">Place:</span>{" "}
-                    {item.addressType}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Pincode:</span>{" "}
-                    {item.pincode}
-                  </p>
-                </div>
-                <input
-                  type="radio"
-                  id={`address_${index}`}
-                  {...register("address_id", { required: true })}
-                  value={item.id.toString()}
-                  checked={selectedAddress === item.id}
-                  onChange={() => handleAddressSelect(item.id)}
-                  className="self-start md:self-center bg-none focus:ring-2 focus:ring-blue-500 focus:outline-none h-full mt-4 md:mt-0"
-                />
+          {isAuthenticated && (
+            <div className="border  gap-4 border-gray-300 p-6 mb-6 rounded-md">
+              <div className="flex justify-between items-center max-sm:flex-col max-sm:w-full">
+                <h3 className="text-primary uppercase font-medium text-sm">
+                  <span className="bg-light py-[1px] px-[3px] text-sm rounded-sm mr-1 ">
+                    1
+                  </span>{" "}
+                  Select Address
+                </h3>{" "}
+                <button
+                  className="text-primary border-[1px] border-gray-200 py-2 px-6 uppercase font-medium text-sm hover:bg-gray-100  max-sm:w-full mt-2"
+                  onClick={() => setShowNewAddressForm(true)}
+                >
+                  Add New Address
+                </button>
               </div>
-            );
-          })}
-          <button
-            className="border-2 rounded-xl p-4 mx-auto my-2 text-gray-400 flex items-center justify-center hover:bg-gray-100 w-full"
-            onClick={() => setShowNewAddressForm(true)}
-          >
-            <Add fontSize="large" />
-          </button>
-        </div>}
+              {savedAddresses.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="mx-auto flex flex-col md:flex-row w-full justify-between rounded-xl p-4 my-2 bg-[#E0F4FF] text-primary"
+                  >
+                    <div className="flex-grow">
+                      <div className="flex flex-col md:flex-row items-start md:items-center mb-2">
+                        <input
+                          type="radio"
+                          id={`address_${index}`}
+                          {...register("address_id", { required: true })}
+                          value={item.id.toString()}
+                          checked={selectedAddress === item.id}
+                          onChange={() => handleAddressSelect(item.id)}
+                          className="accent-[#F1A10A] h-5 w-5 mt-1 md:mt-0"
+                        />
+                        <span className="text-lg font-semibold ml-2">
+                          {item.address}
+                        </span>
+                        <span
+                          className={`ml-2 ${
+                            item.addressType === "Home"
+                              ? "bg-second"
+                              : "bg-primary"
+                          } text-white text-xs font-semibold rounded px-2 py-1`}
+                        >
+                          {item.addressType}
+                        </span>
+                      </div>
+
+                      <p className="text-sm">
+                        <span className="font-semibold">
+                          PinCode: {item.pincode}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2 mt-4 md:mt-0">
+                      <button
+                        onClick={() => deleteAddress(item.id, saasId, storeId)}
+                        className="text-[#0A66C2]"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-5 h-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
-      <div className="p-4 border-[1px] rounded-md">
-        <div
-          onClick={() => handlePaymentChange("cod")}
-          className={`mt-2 p-2 border-[2px] ${
-            selectedMethod === "cod" ? "border-dark" : ""
-          } rounded-md flex justify-between items-center bg-gray-100 `}
-        >
-          <div className="flex gap-2 text-dark">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="cod"
-              checked={selectedMethod === "cod"}
-              onChange={() => handlePaymentChange("cod")}
-              className="mr-2"
-            />
-            <h3 className="font-semibold italic">COD</h3>
-          </div>
-          <Money className="text-black" />
-        </div>
-        <div
-          onClick={() => handlePaymentChange("online")}
-          className={`mt-2 p-2 border-[2px] ${
-            selectedMethod === "online" ? "border-dark" : ""
-          } rounded-md flex justify-between items-center bg-gray-100 `}
-        >
-          <div className="flex gap-2 text-dark">
+
+      {!showNewAddressForm ? (
+        <div className="p-4 border-[1px] rounded-md">
+          <h3 className="text-primary uppercase font-medium text-sm">
+            <span className="bg-light py-[1px] px-[3px] text-sm rounded-sm mr-1 ">
+              2
+            </span>{" "}
+            Payment Option
+          </h3>
+          <div
+            onClick={() => handlePaymentChange("online")}
+            className={`mt-2 p-4  rounded-md flex gap-2 items-center bg-light `}
+          >
             <input
               type="radio"
               name="paymentMethod"
               value="online"
-              checked={selectedMethod === "online"}
+              checked
               onChange={() => handlePaymentChange("online")}
-              className="mr-2"
+              className="mr-2 bg-[#00B207] text-[#00B207]"
             />
-            <h3 className="font-semibold italic">Pay online</h3>
+            <h3 className="font-semibold text-[#4D4D4D]  ">Pay online</h3>
           </div>
-          <Payment className="text-black" />
+          <button
+            onClick={handleSubmit(onSubmit)}
+            className="w-full mt-4 py-2 bg-[#00B207] text-white rounded-full text-lg  hover:bg-[#017f05]transition-colors mx-auto"
+          >
+            Pay and Place Order
+          </button>
         </div>
-      </div>
-
-      <button
-        onClick={
-          selectedMethod === "cod"
-            ? handleSubmit(handlePlaceOrder)
-            : handleSubmit(onSubmit)
-        }
-        className="w-full py-3 bg-second text-white rounded-md text-lg font-semibold hover:bg-yellow-600 transition-colors"
-      >
-        Place Order
-      </button>
+      ) : (
+        ""
+      )}
 
       <dialog id="my_modal_5" className=" modal modal-bottom sm:modal-middle">
         <div className="modal-box bg-white text-dark shadow-lg rounded-lg p-6">
