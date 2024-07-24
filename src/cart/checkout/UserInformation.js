@@ -69,7 +69,7 @@ const CheckoutPage = () => {
       )}`;
 
       const response = await axios.post(
-        `${BASEURL.ENDPOINT_URL}/rezar/pay/1`,
+        `${BASEURL.ENDPOINT_URL}rezar/pay/1`,
         data,
         {
           headers: {
