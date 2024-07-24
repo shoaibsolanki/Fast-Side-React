@@ -1,7 +1,4 @@
-import React, { useState } from "react";
-import { FavoriteRounded } from "@mui/icons-material";
-import { BASEURL } from "../services/http-Pos";
-import Rating from "./Rating";
+import React, { useState, useEffect } from "react";
 import AddToCartButton from "./MicroComponenets/AddToCartButton";
 import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
@@ -10,6 +7,7 @@ import ColorShow from "./MicroComponenets/ColorShow";
 
 const ProductComponent = ({ flex_direction, data }) => {
   const [isHovering, setIsHovering] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
   const { cart } = useCart();
   const Productimage = data?.colorList[0]?.image_url;
   const handleMouseEnter = () => {
@@ -24,6 +22,36 @@ const ProductComponent = ({ flex_direction, data }) => {
     ...data,
     colorList: [data?.colorList[0]],
   };
+
+  useEffect(() => {
+    // Simulate data loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Adjust this timeout as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        className={`border-[1px] p-4 border-gray-400 rounded-xl flex ${
+          flex_direction === "row"
+            ? "flex-row items-center h-full w-full"
+            : "flex-col"
+        } max-w-[400px] relative animate-pulse`}
+      >
+        <div className="relative w-full h-[200px] overflow-hidden flex items-center justify-center bg-gray-300 rounded-xl"></div>
+        <div className="flex justify-between mt-4 w-full">
+          <div className="flex flex-col space-y-2 w-full">
+            <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -46,21 +74,11 @@ const ProductComponent = ({ flex_direction, data }) => {
               alt=""
               width={200}
               height={200}
-              // layout="fill"
-              // objectFit="cover"
               className="rounded-xl"
             />
           </Link>
         </div>
         <div className="flex justify-between">
-          {/* <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-              isHovering ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <AddToCartButton item={selectedProduct} />
-          </div> */}
-
           <div>
             <h2 className="product-title text-primary">
               {data?.item_name?.length > 30

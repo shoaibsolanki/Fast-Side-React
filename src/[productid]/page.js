@@ -216,9 +216,17 @@ const ProductDetails = () => {
       </div>
       <div className="flex justify-center mt-8 gap-4 flex-wrap">
         <button className="btn-second">Description</button>
-        <button className="text-white border-[1px] bg-primary px-8 py-4 rounded-xl">
+        {/* <button className="text-white border-[1px] bg-primary px-8 py-4 rounded-xl">
           Reviews
-        </button>
+        </button> */}
+      </div>
+      <div>
+        <h2 className="text-3xl font-semibold text-primary text-start my-8 underline">
+          About This Product
+        </h2>
+        <p className="text-lg text-dark tracking-widest leading-relaxed">
+          {singleProduct?.special_description}
+        </p>
       </div>
     </section>
   );
