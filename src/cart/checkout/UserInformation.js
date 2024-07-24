@@ -241,11 +241,16 @@ const CheckoutPage = () => {
   };
 
   const onSubmitFirstStep = async (data) => {
+    if (data.mobile_numbers.length !== 10) {
+      setSnackbar({ open: true, message: 'Phone number must be 10 digits!', severity: 'error' });
+      return;
+    }
     try {
       setPhoneNumber(data.mobile_numbers);
       const response = await axios.get(
         `${BASEURL.ENDPOINT_URL}otp/resend-otp/${data.mobile_numbers}`
       );
+
       if (response.status === 200) {
         setSnackbar({
           open: true,
@@ -256,11 +261,14 @@ const CheckoutPage = () => {
         setStep(2);
       }
     } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Failed to send OTP.",
-        severity: "error",
-      });
+      if (error.response.data.message == "User Already Registered") {
+        setSnackbar({ open: true, message: 'User Already Registered!', severity: 'error' });
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      }else {
+        setSnackbar({ open: true, message: 'Error resending OTP. Please try again later.', severity: 'error' });
+      }
     }
   };
 

@@ -34,7 +34,7 @@ const Navbar = ({ search, setSearch, data }) => {
   return (
     <nav id="navbar" className="w-full">
       {/* upper navbar */}
-      <div className=" bg-lightgray text-dark p-4 flex flex-col md:flex-row justify-between items-center">
+      {/* <div className=" bg-lightgray text-dark p-4 flex flex-col md:flex-row justify-between items-center">
         <h2 className="text-sm md:text-lg flex items-center gap-2">
           Call with us:{" "}
           <a
@@ -55,7 +55,7 @@ const Navbar = ({ search, setSearch, data }) => {
             <img src={truck} alt="track_your_order" /> Track Your Order
           </h2>
         </div>
-      </div>
+      </div> */}
       {/* Middle Navbar */}
       <div
         id="lower-navbar"
