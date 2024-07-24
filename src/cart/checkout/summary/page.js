@@ -116,7 +116,7 @@ const OrderComplete = ({ className = "" }) => {
                 Rs {orderSummery?.data?.orderValue}
               </div>
               <div className="relative leading-[22px] font-semibold inline-block min-w-[78px] text-black">
-                Cash on delivery
+                Online Payment{" "}
               </div>
             </div>
           </section>
