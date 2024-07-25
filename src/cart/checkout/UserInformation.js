@@ -4,7 +4,6 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import DataService from "../../services/requestApi";
-import { Add, Money, Payment } from "@mui/icons-material";
 import { BASEURL } from "../../services/http-Pos";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
@@ -19,6 +18,10 @@ const CheckoutPage = () => {
   } = useAuth();
   const { cart, totalPrice, clearCart, totalPricePlusDeliveryCharge } =
     useCart();
+
+  const TotalOrderQeuntity = cart.reduce((total, item) => {
+    return total + item.product_qty;
+  }, 0);
   const navigate = useNavigate();
   const { id, saasId, storeId, mobileNumber, name } = authData;
   const [billingAddress, setBillingAddress] = useState(false);
@@ -175,6 +178,7 @@ const CheckoutPage = () => {
         order_discount: 0,
         status: "pending",
         payment_type: "COD",
+        order_qty: TotalOrderQeuntity,
         razorpay_order_id: paymentResponse.razorpay_order_id,
         razorpay_payment_id: paymentResponse.razorpay_payment_id,
         order_date: new Date(),
