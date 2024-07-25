@@ -2,11 +2,11 @@ import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthConext";
 import Item from "./Componenets/items";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Orders = ({ className = "" }) => {
   const { allOrders } = useAuth();
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(allOrders?.length / itemsPerPage);
@@ -24,37 +24,44 @@ const Orders = ({ className = "" }) => {
 
   return (
     <>
-      <h1 className="relative leading-[32px] font-semibold text-[inherit] mq450:text-[16px] mq450:leading-[26px]">
-        Orders History
-      </h1>
-      <div
-        className={`w-full flex flex-col items-start justify-start py-0 px-[10px] box-border gap-[10px] leading-[normal] tracking-[normal] text-left text-[20px] text-black font-caption-1 mq450:gap-[20px] mq450:px-5 max-w-full  overflow-x-auto  max-lg:max-w-[450px] xl:max-w-full `}
-      >
-        <section className="max-w-full flex flex-col items-start justify-start text-left text-sm text-neutral-04-100 font-caption-1 ">
-          <div className="w-full flex flex-row items-center justify-between pt-0 px-0 pb-1.5 gap-[4px] border-b-[1px] border-solid border-neutral-03-100 mq750:flex-wrap">
-            <div className="w-40 leading-[22px] inline-block shrink-0">
-              Number ID
+      <h1 className="text-2xl font-semibold mb-4">Orders History</h1>
+      <div className="w-full flex flex-col gap-6">
+        {currentOrders?.map((order, index) => (
+          <section
+            key={index}
+            className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+          >
+            <div className="flex flex-col mb-4">
+              <div className="text-lg font-medium">
+                Order ID: {order.order_id}
+              </div>
+              <div className="text-sm text-gray-600">
+                Date: {order.order_date}
+              </div>
+              <div className="text-sm text-gray-600 mt-2">
+                Status:{" "}
+                <span
+                  className={`text-sm text-white font-semibold py-[4px] px-[8px] rounded-lg ${
+                    order.status === "PENDING" ? "bg-red-400" : "green-400"
+                  }`}
+                >
+                  {order.status}
+                </span>
+              </div>
             </div>
-            <a className="[text-decoration:none] w-[120px] leading-[22px] text-[inherit] inline-block shrink-0">
-              Dates
-            </a>
-            <div className="w-[120px] leading-[22px] inline-block shrink-0">
-              Status
+            <div className="flex flex-col">
+              {order.Orderdetail?.map((item, idx) => (
+                <Item
+                  key={idx}
+                  index={idx + 1}
+                  name={item.name}
+                  price={item.orderPrice}
+                  quantity={item.orderQty}
+                />
+              ))}
             </div>
-            <a className="[text-decoration:none] w-[137px] leading-[22px] text-[inherit] inline-block shrink-0">
-              Price
-            </a>
-          </div>
-          {currentOrders?.map((item, index) => (
-            <Item
-              key={index}
-              prop={item.order_id}
-              date={item.order_date}
-              price={item.order_value}
-              status={item.status}
-            />
-          ))}
-        </section>
+          </section>
+        ))}
       </div>
       <div className="flex justify-between mt-4 w-full">
         <button

@@ -1,21 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { Remove } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../../contexts/AuthConext";
+
 const ItemsShowInSide = ({ items }) => {
-  const { totalPrice, handleIncrease, handleDecrease, cart } = useCart();
+  const {
+    totalPrice,
+    handleIncrease,
+    handleDecrease,
+    cart,
+    totalPricePlusDeliveryCharge,
+    deliveryCharge,
+  } = useCart();
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [total, setTotal] = useState(totalPrice);
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleApplyCoupon = () => {};
 
   const handleRemoveCoupon = () => {
     setDiscount(0);
   };
-  console.log(items);
-  console.log("without login cart", cart);
+
+  if (isLoading) {
+    return (
+      <div className="my-4 w-full md:w-[500px] h-full mx-auto border border-gray-300 p-6 rounded-md text-dark">
+        <h2 className="text-lg font-semibold mb-4">Order summary</h2>
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div className="flex items-center space-x-4" key={index}>
+              <div className="w-12 h-12 bg-gray-300 rounded"></div>
+              <div className="flex-1">
+                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+              </div>
+              <div>
+                <div className="h-4 bg-gray-300 rounded w-10 mb-2"></div>
+                <div className="flex items-center space-x-2 mt-2">
+                  <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                  <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                  <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div className="flex my-4 justify-between text-sm">
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          </div>
+          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+
+          <div className="flex justify-between text-sm">
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          </div>
+
+          <div className="flex justify-between text-lg font-semibold">
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="my-4 w-full md:w-[500px] h-full mx-auto border border-gray-300 p-6 rounded-md text-dark">
       <h2 className="text-lg font-semibold mb-4">Order summary</h2>
@@ -46,7 +107,7 @@ const ItemsShowInSide = ({ items }) => {
                 <p>Color: {item.image_name}</p>
               </div>
               <div>
-                <p className="font-semibold">Rs {item.price}.00</p>
+                <p className="font-semibold">₹ {item.price}.00</p>
                 <div className="flex items-center space-x-2 mt-2">
                   <button className="p-1 " onClick={() => handleDecrease(item)}>
                     <Remove />
@@ -61,19 +122,22 @@ const ItemsShowInSide = ({ items }) => {
           );
         })}
 
-        <div className="flex justify-between text-sm">
-          <p>Shipping</p>
-          <p>Free</p>
+        <div className="flex my-4 justify-between text-sm">
+          <p>Shipping </p>
+          {totalPrice < 1999 ? <p>₹{deliveryCharge}</p> : <p>Free</p>}
         </div>
+        <p className="text-[12px] underline font-semibold italic">
+          {"'"}FREE delivery on orders over ₹1999/-{"'"}
+        </p>
 
         <div className="flex justify-between text-sm">
           <p>Subtotal</p>
-          <p>Rs {totalPrice}</p>
+          <p>₹ {totalPrice}</p>
         </div>
 
         <div className="flex justify-between text-lg font-semibold">
           <p>Total</p>
-          <p>Rs {totalPrice - discount}.00</p>
+          <p>₹ {totalPricePlusDeliveryCharge}</p>
         </div>
       </div>
     </div>

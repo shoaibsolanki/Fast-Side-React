@@ -25,9 +25,9 @@ const Content = ({ className = "", address }) => {
         </div> */}
       </div>
       <div className="self-stretch flex flex-col items-start justify-start py-0 pr-5 pl-0 gap-[4px] text-sm">
-        <div className="relative leading-[22px] inline-block min-w-[67px]">
+        {/* <div className="relative leading-[22px] inline-block min-w-[67px]">
           Jeet Patel
-        </div>
+        </div> */}
         <div className="relative leading-[22px] inline-block min-w-[126px]">
           PinCode:{address?.pincode}{" "}
         </div>

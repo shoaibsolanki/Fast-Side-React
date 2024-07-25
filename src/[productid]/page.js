@@ -13,7 +13,11 @@ const ProductDetails = () => {
   const [index, setIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(null);
   const [mainImage, setMainImage] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const fetchSingleProduct = async (id) => {
     try {
       const response = await DataService.FetchSingleProduct(id);
@@ -21,11 +25,12 @@ const ProductDetails = () => {
       setSingleProduct({ ...productData, product_qty: 1 });
       setSelectedColor(productData?.colorList[0]?.product_color);
       setMainImage(productData?.colorList[0]?.image_url);
+      setIsLoading(false); // Set loading to false after data is fetched
     } catch (error) {
       console.log(error);
+      setIsLoading(false); // Set loading to false even if there's an error
     }
   };
-  console.log(singleProduct);
 
   useEffect(() => {
     if (id) {
@@ -70,7 +75,6 @@ const ProductDetails = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-      // Ensure the value is a valid number
       setSingleProduct((prevProduct) => ({
         ...prevProduct,
         product_qty: value === "" ? "" : Math.max(1, parseInt(value)),
@@ -86,6 +90,10 @@ const ProductDetails = () => {
       }));
     }
   };
+
+  if (isLoading) {
+    return <ProductDetailsSkeleton />;
+  }
 
   return (
     <section className="container mx-auto my-8 p-4">
@@ -216,9 +224,6 @@ const ProductDetails = () => {
       </div>
       <div className="flex justify-center mt-8 gap-4 flex-wrap">
         <button className="btn-second">Description</button>
-        {/* <button className="text-white border-[1px] bg-primary px-8 py-4 rounded-xl">
-          Reviews
-        </button> */}
       </div>
       <div>
         <h2 className="text-3xl font-semibold text-primary text-start my-8 underline">
@@ -233,3 +238,56 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+const Skeleton = ({ width, height }) => (
+  <div className={`bg-gray-300 animate-pulse rounded ${width} ${height}`}></div>
+);
+
+const SkeletonText = ({ lines }) => (
+  <div className="space-y-2">
+    {Array(lines)
+      .fill()
+      .map((_, index) => (
+        <Skeleton key={index} width="w-full" height="h-4" />
+      ))}
+  </div>
+);
+
+const SkeletonImage = () => (
+  <div className="w-full sm:w-[500px] h-[500px] bg-gray-300 animate-pulse rounded-xl"></div>
+);
+
+const ProductDetailsSkeleton = () => (
+  <section className="container mx-auto my-8 p-4">
+    <div className="flex flex-col lg:flex-row gap-8 justify-center items-start">
+      <div className="flex flex-col items-center w-full lg:w-auto">
+        <SkeletonImage />
+        <div className="flex gap-4 mt-4 mx-auto flex-wrap">
+          <Skeleton width="w-24" height="h-24" />
+          <Skeleton width="w-24" height="h-24" />
+        </div>
+      </div>
+      <div className="flex flex-col max-w-full lg:max-w-lg w-full">
+        <SkeletonText lines={1} />
+        <Skeleton width="w-full" height="h-8" />
+        <Skeleton width="w-1/2" height="h-8" />
+        <Skeleton width="w-1/4" height="h-8" />
+        <SkeletonText lines={3} />
+        <Skeleton width="w-32" height="h-8" />
+        <div className="flex items-center gap-4 my-4">
+          <Skeleton width="w-8" height="h-8" />
+          <Skeleton width="w-8" height="h-8" />
+        </div>
+        <SkeletonText lines={1} />
+        <Skeleton width="w-full" height="h-10" />
+      </div>
+    </div>
+    <div className="flex justify-center mt-8 gap-4 flex-wrap">
+      <Skeleton width="w-32" height="h-10" />
+    </div>
+    <div>
+      <Skeleton width="w-1/2" height="h-8" />
+      <SkeletonText lines={4} />
+    </div>
+  </section>
+);

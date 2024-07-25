@@ -12,6 +12,9 @@ export const CartProvider = ({ children }) => {
   const { id, saasId, storeId } = authData;
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [totalPricePlusDeliveryCharge, setTotalPricePlusDeliveryCharge] =
+    useState();
 
   const [cart, setCart] = useState(() => {
     if (typeof window !== "undefined" && localStorage) {
@@ -57,17 +60,17 @@ export const CartProvider = ({ children }) => {
     try {
       const response = await DataService.GetCartItems(saasId, storeId, userId);
       const fetchedCart = response?.data?.data?.products;
-      console.log("first",id, saasId, storeId )
-      const transformedCart = fetchedCart.map(product => ({
+      console.log("first", id, saasId, storeId);
+      const transformedCart = fetchedCart.map((product) => ({
         ...product,
         saas_id: product.saasId,
         store_id: product.storeId,
-        item_name:product.itemName,
+        item_name: product.itemName,
         // Optional: Remove original saasId and storeId if not needed
         saasId: undefined,
-        storeId: undefined
+        storeId: undefined,
       }));
-  
+
       setCart(transformedCart);
       subTotal = fetchedCart.reduce((total, product) => {
         return total + product.price * product.product_qty;
@@ -87,9 +90,9 @@ export const CartProvider = ({ children }) => {
       const storedCart = localStorage.getItem("cart");
       if (storedCart) {
         const localStorageCart = JSON.parse(storedCart);
-   
-          await AddProductlist(localStorageCart, userId);
-       
+
+        await AddProductlist(localStorageCart, userId);
+
         localStorage.removeItem("cart");
       }
     }
@@ -199,10 +202,7 @@ export const CartProvider = ({ children }) => {
           });
           setTotalItems(updatedCart?.length);
         } else {
-          updatedCart = [
-            ...prevCart,
-            { ...product, id: Math.random() * 100 },
-          ];
+          updatedCart = [...prevCart, { ...product, id: Math.random() * 100 }];
           console.log("updetedcart", updatedCart);
           setTotalItems(updatedCart?.length);
         }
@@ -239,12 +239,23 @@ export const CartProvider = ({ children }) => {
         }, 0);
 
         setTotalPrice(totalNewPrice);
+
         setTotalItems(updatedCart?.length);
         return updatedCart;
       });
     }
   };
 
+  useEffect(() => {
+    if (totalPrice < 1999) {
+      const deliveryCharge = 100;
+      setDeliveryCharge(deliveryCharge);
+      setTotalPricePlusDeliveryCharge(totalPrice + deliveryCharge);
+    } else {
+      setDeliveryCharge(0); // Ensure delivery charge is reset when price is 1999 or more
+      setTotalPricePlusDeliveryCharge(totalPrice);
+    }
+  }, [totalPrice, cart]);
   const clearCartFromServer = async (UserId) => {
     try {
       const response = await DataService.DeleteAllItemsFromCart(
@@ -331,6 +342,8 @@ export const CartProvider = ({ children }) => {
         handleIncrease,
         handleDecrease,
         deleteItem,
+        totalPricePlusDeliveryCharge,
+        deliveryCharge,
       }}
     >
       {children}

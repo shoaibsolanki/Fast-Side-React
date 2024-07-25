@@ -43,16 +43,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getOrderHistory = async (saasId, storeId, id) => {
+  const getOrderHistory = async (storeId, saasId, id) => {
     try {
-      const response = await DataService.OrderHistory(saasId, storeId, id);
+      const response = await DataService.OrderHistory(storeId, saasId, id);
       setAllOrders(response.data.data);
     } catch (error) {
       console.error(error);
     }
   };
+  console.log(allOrders);
   useEffect(() => {
-    getOrderHistory(saasId, storeId, id);
+    getOrderHistory(storeId, saasId, id);
   }, [id]);
 
   useEffect(() => {
@@ -95,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         fetchAndSetProducts,
         isPaymentSuccessful,
         setIsPaymentSuccessful,
+        getOrderHistory,
       }}
     >
       {children}

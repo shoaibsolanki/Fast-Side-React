@@ -12,7 +12,6 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("order");
   const navigate = useNavigate();
   const { name } = authData;
-  console.log(authData, name);
 
   useEffect(() => {
     if (!isAuthenticated) {

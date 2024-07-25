@@ -50,8 +50,10 @@ class DataService {
       `price-check/delete-all-products/${saasId}/${storeId}/${id}`
     );
   }
-  OrderHistory(saasId, storeId, id) {
-    return https.get(`order/view-order-detail-app/${storeId}/${saasId}/${id}`);
+  OrderHistory(storeId, saasId, id) {
+    return https.get(
+      `order/view-order-detail-fastside/${storeId}/${saasId}/${id}`
+    );
   }
   CreateOrder(data) {
     return https.post(`/order/create/order/master`, data);

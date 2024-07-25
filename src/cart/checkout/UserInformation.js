@@ -10,11 +10,17 @@ import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 const CheckoutPage = () => {
-  const { authData, setIsPaymentSuccessful, login, isAuthenticated, } =
-    useAuth();
-  const { cart, totalPrice, clearCart } = useCart();
+  const {
+    authData,
+    setIsPaymentSuccessful,
+    login,
+    isAuthenticated,
+    getOrderHistory,
+  } = useAuth();
+  const { cart, totalPrice, clearCart, totalPricePlusDeliveryCharge } =
+    useCart();
   const navigate = useNavigate();
-  const { id, saasId, storeId,mobileNumber ,name} = authData;
+  const { id, saasId, storeId, mobileNumber, name } = authData;
   const [billingAddress, setBillingAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showNewAddressForm, setShowNewAddressForm] = useState(true);
@@ -60,7 +66,7 @@ const CheckoutPage = () => {
   const createRazorpayOrder = async () => {
     try {
       const data = {
-        amount: totalPrice * 100,
+        amount: totalPricePlusDeliveryCharge * 100,
         currency: "INR",
       };
 
@@ -92,7 +98,7 @@ const CheckoutPage = () => {
       const orderId = await createRazorpayOrder();
       const options = {
         key: "rzp_test_USk6kNFvt2WXOE",
-        amount: totalPrice * 100,
+        amount: totalPricePlusDeliveryCharge * 100,
         currency: "INR",
         name: "FastSide",
         description: "Test Transaction",
@@ -124,6 +130,7 @@ const CheckoutPage = () => {
       console.error("Error handling Razorpay payment:", error);
     }
   };
+
   const deleteAddress = async (id, saasId, storeId) => {
     try {
       const response = await DataService.DeleteAddress(id, saasId, storeId);
@@ -183,7 +190,8 @@ const CheckoutPage = () => {
 
       if (response.status === 200) {
         console.log("Order placed");
-        document.getElementById("my_modal_5").showModal();
+        getOrderHistory();
+
         clearCart();
         setIsPaymentSuccessful(true);
       }
@@ -242,7 +250,11 @@ const CheckoutPage = () => {
 
   const onSubmitFirstStep = async (data) => {
     if (data.mobile_numbers.length !== 10) {
-      setSnackbar({ open: true, message: 'Phone number must be 10 digits!', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Phone number must be 10 digits!",
+        severity: "error",
+      });
       return;
     }
     try {
@@ -262,12 +274,20 @@ const CheckoutPage = () => {
       }
     } catch (error) {
       if (error.response.data.message == "User Already Registered") {
-        setSnackbar({ open: true, message: 'User Already Registered!', severity: 'error' });
+        setSnackbar({
+          open: true,
+          message: "User Already Registered!",
+          severity: "error",
+        });
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 2000);
-      }else {
-        setSnackbar({ open: true, message: 'Error resending OTP. Please try again later.', severity: 'error' });
+      } else {
+        setSnackbar({
+          open: true,
+          message: "Error resending OTP. Please try again later.",
+          severity: "error",
+        });
       }
     }
   };
@@ -395,6 +415,36 @@ const CheckoutPage = () => {
       // Handle error
     }
   };
+
+  //fetching states:---
+  const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    const fetchStates = async () => {
+      try {
+        const response = await fetch(
+          "https://countriesnow.space/api/v0.1/countries/states",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              country: "India",
+            }),
+          }
+        );
+        const data = await response.json();
+        setStates(data.data.states);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      }
+    };
+
+    fetchStates();
+  }, []);
+  console.log(states);
+
   return (
     <div className="w-full mx-auto p-4">
       {!isAuthenticated && (
@@ -584,14 +634,23 @@ const CheckoutPage = () => {
                 <label htmlFor="state" className="text-sm font-semibold">
                   State
                 </label>
-                <input
+                <select
                   {...register("state", { required: true })}
-                  type="text"
                   id="state"
-                  placeholder="State"
                   className="bg-white mt-1 p-2 border border-gray-300 rounded-md w-full"
-                />
-                {errors.state && <span>This field is required</span>}
+                >
+                  <option value="">Select your state</option>
+                  {states.map((state, index) => (
+                    <option key={index} value={state.name}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.state && (
+                  <span className="text-red-500 text-xs">
+                    This field is required
+                  </span>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="zipCode" className="text-sm font-semibold">
