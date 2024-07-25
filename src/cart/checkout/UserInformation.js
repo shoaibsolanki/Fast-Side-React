@@ -10,11 +10,11 @@ import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 const CheckoutPage = () => {
-  const { authData, setIsPaymentSuccessful, login, isAuthenticated, name } =
+  const { authData, setIsPaymentSuccessful, login, isAuthenticated, } =
     useAuth();
   const { cart, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const { id, saasId, storeId } = authData;
+  const { id, saasId, storeId,mobileNumber ,name} = authData;
   const [billingAddress, setBillingAddress] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showNewAddressForm, setShowNewAddressForm] = useState(true);
@@ -160,7 +160,7 @@ const CheckoutPage = () => {
         address_id: data.address_id,
         customer_id: id,
         customer_name: name,
-        mobile_number: data.Mobile_numbers,
+        mobile_number: mobileNumber,
         saas_id: saasId,
         store_id: storeId,
         order_tax: 0,
@@ -321,7 +321,7 @@ const CheckoutPage = () => {
           address_3: "Building 5",
           discount_percent: 10.0,
           email: "admin123@gmail.com",
-          customer_name: `${data.first_name} ${data.last_name}`,
+          name: `${data.first_name} ${data.last_name}`,
           card_number: Math.ceil(Math.random() * 10000),
           store_id: "33001",
           saas_id: "33",
@@ -411,7 +411,7 @@ const CheckoutPage = () => {
                   First Name
                 </label>
                 <input
-                  {...register("first_name", { required: false })}
+                  {...register("first_name", { required: true })}
                   type="text"
                   id="firstName"
                   placeholder="First name"
@@ -424,7 +424,7 @@ const CheckoutPage = () => {
                   Last Name
                 </label>
                 <input
-                  {...register("last_name", { required: false })}
+                  {...register("last_name", { required: true })}
                   type="text"
                   id="lastName"
                   placeholder="Last name"

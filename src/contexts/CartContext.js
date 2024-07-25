@@ -58,8 +58,17 @@ export const CartProvider = ({ children }) => {
       const response = await DataService.GetCartItems(saasId, storeId, userId);
       const fetchedCart = response?.data?.data?.products;
       console.log("first",id, saasId, storeId )
-
-      setCart(fetchedCart);
+      const transformedCart = fetchedCart.map(product => ({
+        ...product,
+        saas_id: product.saasId,
+        store_id: product.storeId,
+        item_name:product.itemName,
+        // Optional: Remove original saasId and storeId if not needed
+        saasId: undefined,
+        storeId: undefined
+      }));
+  
+      setCart(transformedCart);
       subTotal = fetchedCart.reduce((total, product) => {
         return total + product.price * product.product_qty;
       }, 0);
