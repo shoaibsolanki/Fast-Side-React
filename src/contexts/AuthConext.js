@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }) => {
   const getOrderHistory = async (storeId, saasId, id) => {
     try {
       const response = await DataService.OrderHistory(storeId, saasId, id);
-      setAllOrders(response.data.data);
+      const reversedOrders = response.data.data.slice().reverse();
+      setAllOrders(reversedOrders);
     } catch (error) {
       console.error(error);
     }

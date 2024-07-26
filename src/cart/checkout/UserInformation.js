@@ -162,10 +162,10 @@ const CheckoutPage = () => {
 
     await saveAddress(addressForSave);
   };
-  console.log("savedaddress", savedAddresses);
   const [customerName, setCustomerName] = useState();
   const handlePlaceOrder = async (data, paymentResponse) => {
     try {
+      const updatedCart = cart.map((item) => ({ ...item, productQty: 0 }));
       const orderInformations = {
         address_id: data.address_id,
         customer_id: id,
@@ -177,13 +177,13 @@ const CheckoutPage = () => {
         order_value: totalPrice,
         order_discount: 0,
         status: "pending",
-        payment_type: "COD",
+        payment_type: "Online Payment",
         order_qty: TotalOrderQeuntity,
         razorpay_order_id: paymentResponse.razorpay_order_id,
         razorpay_payment_id: paymentResponse.razorpay_payment_id,
         order_date: new Date(),
         order_type: "",
-        item_list: cart,
+        item_list: updatedCart,
       };
 
       localStorage.setItem("orderInformations", JSON.stringify(cart));
@@ -203,7 +203,7 @@ const CheckoutPage = () => {
       console.error("Error placing order:", error);
     }
   };
-
+  console.log(cart);
   const saveAddress = async (data) => {
     try {
       const response = await DataService.SaveAddress(data, id);
@@ -218,8 +218,10 @@ const CheckoutPage = () => {
   const getSavedData = async () => {
     try {
       const response = await DataService.GetSavedAddress(id, saasId, storeId);
-      console.log("Saved addresses:", response.data.data);
       setSavedAddresses(response.data.data);
+      if (response.data.data.length > 0) {
+        setSelectedAddress(response.data.data[0].id);
+      }
     } catch (error) {
       console.error("Error fetching saved addresses:", error);
     }
@@ -447,7 +449,6 @@ const CheckoutPage = () => {
 
     fetchStates();
   }, []);
-  console.log(states);
 
   return (
     <div className="w-full mx-auto p-4">
@@ -701,7 +702,7 @@ const CheckoutPage = () => {
               <span></span>
               <button
                 type="submit"
-                className="text-primary border-[1px] border-gray-200 py-2 px-6 uppercase font-medium text-sm hover:bg-gray-100"
+                className="text-white border-[1px] border-gray-200 py-2 px-6 uppercase font-medium text-sm bg-second"
               >
                 Save address
               </button>
@@ -771,7 +772,7 @@ const CheckoutPage = () => {
                         </span>
                       </p>
                     </div>
-                    <div className="flex items-center space-x-2 mt-4 md:mt-0">
+                    {/* <div className="flex items-center space-x-2 mt-4 md:mt-0">
                       <button
                         onClick={() => deleteAddress(item.id, saasId, storeId)}
                         className="text-[#0A66C2]"
@@ -791,7 +792,7 @@ const CheckoutPage = () => {
                           />
                         </svg>
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 );
               })}

@@ -3,13 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import DataService from "../services/requestApi";
 import { useAuth } from "../contexts/AuthConext";
-import Cookies from "js-cookie";
 import { Alert } from "@mui/material";
+import ForgotPasswordModal from "../components/ForgetPasswordModel";
 
 const Login = () => {
   const [error, setError] = useState("");
   const [errorAlert, setErrorAlert] = useState(false);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const { login, isAuthenticated } = useAuth();
   const {
@@ -55,7 +56,7 @@ const Login = () => {
 
   return (
     <div
-      className="relative h-screen  flex items-center justify-center bg-cover bg-center w-full"
+      className="relative h-screen flex items-center justify-center bg-cover bg-center w-full"
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
@@ -66,7 +67,7 @@ const Login = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col items-center gap-3 py-4 w-full"
         >
-          <h1 className="font-bold text-dark text-xl">Sign In</h1>
+          <h1 className="font-bold text-dark text-xl">Login In</h1>
           <input
             {...register("user_name", { required: true })}
             className="border-2 bg-white rounded h-9 w-full md:w-80 focus-visible:outline-none focus-visible:bg-lightPrimary focus-visible:text-primary px-2"
@@ -93,13 +94,17 @@ const Login = () => {
           />
           <p>
             {/* Don't have an account?{" "} */}
-            {/* <Link className="hover:text-second font-medium" to="/Signup">
-              Register
-            </Link> */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="hover:text-second font-medium"
+            >
+              Forget Password?
+            </button>
           </p>
           {errorAlert && <Alert severity="error">{error}</Alert>}
         </form>
       </div>
+      <ForgotPasswordModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   );
 };

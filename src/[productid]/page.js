@@ -3,7 +3,7 @@ import Rating from "../components/Rating";
 import { Check } from "@mui/icons-material";
 import DataService from "../services/requestApi";
 import { useCart } from "../contexts/CartContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProductDetails = () => {
   const { addToCart } = useCart();
@@ -14,6 +14,8 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const [mainImage, setMainImage] = useState("");
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,6 +58,9 @@ const ProductDetails = () => {
     };
 
     addToCart(selectedProduct);
+    setTimeout(() => {
+      navigate("/"); // Redirect to homepage
+    }, 3000);
   };
 
   const addQty = () => {

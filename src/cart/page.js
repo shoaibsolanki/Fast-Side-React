@@ -305,8 +305,10 @@ const Cart = () => {
                 {loading ? (
                   <Skeleton variant="rectangular" height={56} />
                 ) : (
-                  <Select fullWidth displayEmpty defaultValue="">
-                    <MenuItem value="">Country</MenuItem>
+                  <Select fullWidth displayEmpty defaultValue="India">
+                    <MenuItem value="">India</MenuItem>
+                    <MenuItem value="">USA</MenuItem>
+                    <MenuItem value="">India</MenuItem>
                   </Select>
                 )}
                 <Box display="flex" justifyContent="space-between" my={2}>
@@ -449,7 +451,7 @@ const Cart = () => {
                 InputProps={{ endAdornment: <Button>Apply</Button> }}
               />
               <Select fullWidth displayEmpty defaultValue="">
-                <MenuItem value="">Country</MenuItem>
+                <MenuItem value="">India</MenuItem>
               </Select>
               <Box display="flex" justifyContent="space-between" my={2}>
                 <Typography variant="body1">Total amount</Typography>

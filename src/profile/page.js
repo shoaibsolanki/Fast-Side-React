@@ -8,7 +8,7 @@ import { useAuth } from "../contexts/AuthConext";
 import LogoutModal from "./LogoutModal";
 
 const Profile = () => {
-  const { logout, authData, isAuthenticated } = useAuth();
+  const { logout, authData, isAuthenticated, getOrderHistory } = useAuth();
   const [activeTab, setActiveTab] = useState("order");
   const navigate = useNavigate();
   const { name } = authData;
@@ -19,6 +19,9 @@ const Profile = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    getOrderHistory();
+  });
   let content;
   switch (activeTab) {
     case "account":
