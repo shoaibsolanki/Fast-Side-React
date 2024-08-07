@@ -121,7 +121,7 @@ const OrderComplete = ({ className = "" }) => {
             </div>
           </section>
           <div className="w-[548px] flex flex-row items-start justify-center max-w-full">
-            <Link to="/profile">
+            <a href="/profile">
               <Button
                 className="h-[52px] w-[203px]"
                 disableElevation
@@ -139,7 +139,7 @@ const OrderComplete = ({ className = "" }) => {
               >
                 Purchase history
               </Button>
-            </Link>
+            </a>
           </div>
         </div>{" "}
       </div>

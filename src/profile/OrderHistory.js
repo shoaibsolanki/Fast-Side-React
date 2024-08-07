@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
 const Orders = ({ className = "" }) => {
-  const { allOrders, getOrderHistory } = useAuth();
+  const { allOrders, getOrderHistory ,authData} = useAuth();
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { id, saasId, storeId, mobileNumber, name } = authData;
   const totalPages = Math.ceil(allOrders?.length / itemsPerPage);
 
   const handleNextPage = () => {
@@ -23,7 +23,7 @@ const Orders = ({ className = "" }) => {
   const currentOrders = allOrders?.slice(startIndex, startIndex + itemsPerPage);
 
   useEffect(() => {
-    getOrderHistory();
+    getOrderHistory(storeId,saasId,id);
     // window.location.reload();
   }, []);
   console.log(allOrders);
@@ -50,7 +50,7 @@ const Orders = ({ className = "" }) => {
                     Status:{" "}
                     <span
                       className={`text-sm text-white font-semibold py-[4px] px-[8px] rounded-lg ${
-                        order.status === "PENDING" ? "bg-red-400" : "green-400"
+                        order.status === "PENDING" ? "bg-red-400" : "bg-green-400"
                       }`}
                     >
                       {order.status}

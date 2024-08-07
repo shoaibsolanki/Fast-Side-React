@@ -8,7 +8,7 @@ const details = [
   {
     icon: boxTick,
     title: "Free Delivery",
-    details: "on order above RS 1,000",
+    details: "on order above RS 1999",
   },
   {
     icon: crown,

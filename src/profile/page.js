@@ -11,7 +11,7 @@ const Profile = () => {
   const { logout, authData, isAuthenticated, getOrderHistory } = useAuth();
   const [activeTab, setActiveTab] = useState("order");
   const navigate = useNavigate();
-  const { name } = authData;
+  const { id, saasId, storeId, mobileNumber, name } = authData;
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -20,8 +20,8 @@ const Profile = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    getOrderHistory();
-  });
+    getOrderHistory(storeId,saasId,id);
+  },[]);
   let content;
   switch (activeTab) {
     case "account":

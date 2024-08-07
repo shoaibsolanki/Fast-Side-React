@@ -54,7 +54,9 @@ export const AuthProvider = ({ children }) => {
   };
   console.log(allOrders);
   useEffect(() => {
-    getOrderHistory(storeId, saasId, id);
+    if(storeId,saasId,id){
+      getOrderHistory(storeId, saasId, id);
+    }
   }, [id]);
 
   useEffect(() => {

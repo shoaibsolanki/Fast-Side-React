@@ -69,16 +69,16 @@ const CheckoutPage = () => {
   const createRazorpayOrder = async () => {
     try {
       const data = {
-        amount: totalPricePlusDeliveryCharge * 100,
+        amount: totalPricePlusDeliveryCharge ,
         currency: "INR",
       };
 
       const authHeader = `Basic ${btoa(
-        "rzp_test_USk6kNFvt2WXOE:afZsDDDaTvqhZPxMLH1p0b2t"
+        "rzp_live_CJwPNN6lM1QV1v:7NMwsWRrzZqXPo9k78fEz7hf"
       )}`;
 
       const response = await axios.post(
-        `${BASEURL.ENDPOINT_URL}rezar/pay/1`,
+        `${BASEURL.ENDPOINT_URL}rezar/pay/${data.amount}`,
         data,
         {
           headers: {
@@ -100,8 +100,8 @@ const CheckoutPage = () => {
     try {
       const orderId = await createRazorpayOrder();
       const options = {
-        key: "rzp_test_USk6kNFvt2WXOE",
-        amount: totalPricePlusDeliveryCharge * 100,
+        key: "rzp_live_CJwPNN6lM1QV1v",
+        amount: totalPricePlusDeliveryCharge ,
         currency: "INR",
         name: "FastSide",
         description: "Test Transaction",
@@ -194,7 +194,7 @@ const CheckoutPage = () => {
 
       if (response.status === 200) {
         console.log("Order placed");
-        getOrderHistory();
+        getOrderHistory(storeId,saasId,id);
 
         clearCart();
         setIsPaymentSuccessful(true);
